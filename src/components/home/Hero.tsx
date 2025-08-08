@@ -58,13 +58,6 @@ const Hero = () => {
           </HeroButton>
         </div>
 
-        {/* Floating Chat Bubble */}
-        <div className="fixed bottom-6 right-6 z-50 animate-float">
-          <div className="bg-gradient-to-r from-primary to-primary-hover text-white px-4 py-3 rounded-full shadow-floating flex items-center space-x-2 cursor-pointer hover:scale-110 transition-transform">
-            <MessageCircle size={20} />
-            <span className="font-medium">Chat with AI</span>
-          </div>
-        </div>
       </div>
 
       {/* Scroll Indicator */}
