@@ -17,7 +17,9 @@ const ChatBotWrapper = () => {
   const getContext = () => {
     const path = location.pathname;
     
-    if (path === '/') return 'Homepage - User is browsing the main page';
+    // Don't show chatbot on homepage
+    if (path === '/') return null;
+    
     if (path.includes('/booking')) return 'Booking - User is in the booking flow';
     if (path.includes('/dashboard')) return 'Dashboard - User is viewing their dashboard';
     if (path.includes('/profile')) return 'Profile - User is managing their profile';
@@ -29,6 +31,11 @@ const ChatBotWrapper = () => {
     
     return `Current page: ${path}`;
   };
+
+  // Don't render chatbot on homepage
+  if (location.pathname === '/') {
+    return null;
+  }
 
   return (
     <ChatBot 
