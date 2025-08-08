@@ -1,23 +1,70 @@
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Eye, EyeOff } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useAuth } from "@/contexts/AuthContext"
+import { toast } from "sonner"
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false)
-  const [otpSent, setOtpSent] = useState(false)
+  const [showOtpInput, setShowOtpInput] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
     otp: ""
   })
+  
+  const { signup } = useAuth()
+  const navigate = useNavigate()
 
-  const handleSendOTP = () => {
-    setOtpSent(true)
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }))
+  }
+
+  const handleSendOtp = () => {
+    if (formData.email) {
+      setShowOtpInput(true)
+      toast.success("OTP sent to your email!")
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
+      toast.error("Please fill in all fields")
+      return
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords don't match")
+      return
+    }
+
+    if (showOtpInput && !formData.otp) {
+      toast.error("Please enter the OTP")
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      await signup(formData.email, formData.password, formData.name)
+      toast.success("Account created successfully!")
+      navigate("/dashboard")
+    } catch (error) {
+      toast.error("Signup failed. Please try again.")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -29,51 +76,68 @@ const Signup = () => {
               <span className="text-white font-bold text-xl">S</span>
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-secondary">
+          <CardTitle className="text-2xl font-bold text-secondary">
             Create your Sanchaari account
-          </h1>
-          <p className="text-muted-foreground">
+          </CardTitle>
+          <CardDescription className="text-muted-foreground">
             Start planning amazing group trips today
-          </p>
+          </CardDescription>
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div className="space-y-4">
-            {/* Email Input */}
+          {/* Signup Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Enter your full name"
+                value={formData.name}
+                onChange={handleInputChange}
+                className="w-full"
+                required
+              />
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="email">Email or Mobile</Label>
               <div className="flex space-x-2">
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="Enter your email or mobile"
-                  className="input-sanchaari flex-1"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={handleInputChange}
+                  className="flex-1"
+                  required
                 />
-                {!otpSent && (
-                  <Button 
-                    onClick={handleSendOTP}
-                    className="bg-gradient-to-r from-primary to-primary-hover hover:scale-105 transition-transform"
-                  >
-                    Send OTP
-                  </Button>
-                )}
+                <Button 
+                  type="button" 
+                  variant="outline"
+                  onClick={handleSendOtp}
+                  disabled={!formData.email}
+                >
+                  Send OTP
+                </Button>
               </div>
             </div>
 
             {/* OTP Input - appears after OTP is sent */}
-            {otpSent && (
+            {showOtpInput && (
               <div className="space-y-2 animate-fade-in-up">
                 <Label htmlFor="otp">Enter OTP</Label>
                 <Input
                   id="otp"
+                  name="otp"
                   type="text"
                   placeholder="Enter 6-digit OTP"
-                  className="input-sanchaari"
+                  className="w-full"
                   maxLength={6}
                   value={formData.otp}
-                  onChange={(e) => setFormData({...formData, otp: e.target.value})}
+                  onChange={handleInputChange}
                 />
                 <p className="text-sm text-muted-foreground">
                   OTP sent to {formData.email}
@@ -87,21 +151,21 @@ const Signup = () => {
               <div className="relative">
                 <Input
                   id="password"
+                  name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Create a strong password"
-                  className="input-sanchaari pr-10"
                   value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  onChange={handleInputChange}
+                  className="w-full pr-10"
+                  required
                 />
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2"
                   onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </Button>
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
 
@@ -110,14 +174,24 @@ const Signup = () => {
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <Input
                 id="confirmPassword"
+                name="confirmPassword"
                 type="password"
                 placeholder="Confirm your password"
-                className="input-sanchaari"
                 value={formData.confirmPassword}
-                onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                onChange={handleInputChange}
+                className="w-full"
+                required
               />
             </div>
-          </div>
+
+            <Button 
+              type="submit" 
+              className="w-full bg-gradient-to-r from-primary to-primary-hover"
+              disabled={isLoading || !formData.name || !formData.email || !formData.password || !formData.confirmPassword || (showOtpInput && !formData.otp)}
+            >
+              {isLoading ? "Creating Account..." : "Create Account"}
+            </Button>
+          </form>
 
           {/* Social Login */}
           <div className="space-y-4">
@@ -160,14 +234,6 @@ const Signup = () => {
               </Button>
             </div>
           </div>
-
-          {/* Submit Button */}
-          <Button 
-            className="w-full bg-gradient-to-r from-primary to-primary-hover hover:scale-105 transition-transform text-lg py-3"
-            disabled={!formData.email || !formData.password || !formData.confirmPassword || !formData.otp}
-          >
-            Create Account
-          </Button>
 
           {/* Login Link */}
           <p className="text-center text-muted-foreground">

@@ -1,9 +1,28 @@
+import { useAuth } from "@/contexts/AuthContext"
+import { Navigate } from "react-router-dom"
 import Navbar from "@/components/layout/Navbar"
 import Hero from "@/components/home/Hero"
 import Features from "@/components/home/Features"
 import Testimonials from "@/components/home/Testimonials"
 
 const Index = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Show loading spinner while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // Redirect logged-in users to dashboard
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  // Show marketing homepage for logged-out users
   return (
     <div className="min-h-screen">
       <Navbar />

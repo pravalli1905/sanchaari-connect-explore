@@ -1,96 +1,101 @@
 import { useState } from "react"
-import { Check, ArrowLeft } from "lucide-react"
+import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
+import { toast } from "sonner"
+import { useAuth } from "@/contexts/AuthContext"
 import Navbar from "@/components/layout/Navbar"
-import { Link } from "react-router-dom"
+
+const languages = [
+  { 
+    id: "english", 
+    name: "English", 
+    nativeName: "English",
+    flag: "🇺🇸",
+    sample: "Welcome to Sanchaari! Plan your next group trip."
+  },
+  { 
+    id: "hindi", 
+    name: "Hindi", 
+    nativeName: "हिंदी",
+    flag: "🇮🇳",
+    sample: "सांचारी में आपका स्वागत है! अपनी अगली ग्रुप ट्रिप प्लान करें।"
+  },
+  { 
+    id: "bengali", 
+    name: "Bengali", 
+    nativeName: "বাংলা",
+    flag: "🇧🇩",
+    sample: "সাঞ্চারীতে স্বাগতম! আপনার পরবর্তী গ্রুপ ট্রিপ পরিকল্পনা করুন।"
+  },
+  { 
+    id: "tamil", 
+    name: "Tamil", 
+    nativeName: "தமிழ்",
+    flag: "🇮🇳",
+    sample: "சாஞ்சாரியில் வரவேற்கிறோம்! உங்கள் அடுத்த குழு பயணத்தைத் திட்டமிடுங்கள்।"
+  },
+  { 
+    id: "telugu", 
+    name: "Telugu", 
+    nativeName: "తెలుగు",
+    flag: "🇮🇳",
+    sample: "సాంచారీకి స్వాగతం! మీ తదుపరి గ్రూప్ ట్రిప్‌ను ప్లాన్ చేయండి।"
+  },
+  { 
+    id: "marathi", 
+    name: "Marathi", 
+    nativeName: "मराठी",
+    flag: "🇮🇳",
+    sample: "सांचारीमध्ये आपले स्वागत! आपला पुढील ग्रुप ट्रिप प्लॅन करा।"
+  }
+]
 
 const LanguageSelection = () => {
   const [selectedLanguage, setSelectedLanguage] = useState("english")
-  
-  const languages = [
-    { 
-      id: "english", 
-      name: "English", 
-      nativeName: "English",
-      flag: "🇺🇸",
-      sample: "Welcome to Sanchaari! Plan your next group trip."
-    },
-    { 
-      id: "hindi", 
-      name: "Hindi", 
-      nativeName: "हिंदी",
-      flag: "🇮🇳",
-      sample: "सांचारी में आपका स्वागत है! अपनी अगली ग्रुप ट्रिप प्लान करें।"
-    },
-    { 
-      id: "bengali", 
-      name: "Bengali", 
-      nativeName: "বাংলা",
-      flag: "🇧🇩",
-      sample: "সাঞ্চারীতে স্বাগতম! আপনার পরবর্তী গ্রুপ ট্রিপ পরিকল্পনা করুন।"
-    },
-    { 
-      id: "tamil", 
-      name: "Tamil", 
-      nativeName: "தமிழ்",
-      flag: "🇮🇳",
-      sample: "சாஞ்சாரியில் வரவேற்கிறோம்! உங்கள் அடுத்த குழு பயணத்தைத் திட்டமிடுங்கள்।"
-    },
-    { 
-      id: "telugu", 
-      name: "Telugu", 
-      nativeName: "తెలుగు",
-      flag: "🇮🇳",
-      sample: "సాంచారీకి స్వాగతం! మీ తదుపరి గ్రూప్ ట్రిప్‌ను ప్లాన్ చేయండి।"
-    },
-    { 
-      id: "marathi", 
-      name: "Marathi", 
-      nativeName: "मराठी",
-      flag: "🇮🇳",
-      sample: "सांचारीमध्ये आपले स्वागत! आपला पुढील ग्रुप ट्रिप प्लॅन करा।"
-    }
-  ]
+  const [isLoading, setIsLoading] = useState(false)
+  const { isAuthenticated } = useAuth()
 
-  const selectedLang = languages.find(lang => lang.id === selectedLanguage)
+  const handleSave = async () => {
+    setIsLoading(true)
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    
+    const selectedLang = languages.find(lang => lang.id === selectedLanguage)?.name
+    
+    if (isAuthenticated) {
+      toast.success(`Language preference saved: ${selectedLang}`)
+    } else {
+      // Store in localStorage for guest users
+      localStorage.setItem('sanchaari_language', selectedLanguage)
+      toast.success(`Language changed to ${selectedLang} (stored locally)`)
+    }
+    
+    setIsLoading(false)
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       
       <div className="pt-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
-        <div className="mb-6">
-          <Link to="/profile">
-            <Button variant="ghost" className="mb-4">
-              <ArrowLeft className="mr-2" size={20} />
-              Back to Profile
-            </Button>
-          </Link>
-        </div>
-
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-secondary mb-4">
-            Choose Your Language
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Select your preferred language for the interface and AI chatbot interactions
+          <h1 className="text-3xl font-bold text-foreground mb-2">Choose Your Language</h1>
+          <p className="text-muted-foreground">
+            Select your preferred language for the interface and assistant conversations
+            {!isAuthenticated && " (changes will be stored locally)"}
           </p>
         </div>
 
         {/* Language Preview */}
-        {selectedLang && (
-          <Card className="card-elevated mb-8">
-            <CardHeader>
-              <CardTitle className="text-center">Preview</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <p className="text-lg text-muted-foreground">
-                {selectedLang.sample}
-              </p>
-            </CardContent>
-          </Card>
-        )}
+        <Card className="card-elevated mb-8">
+          <CardContent className="p-6 text-center">
+            <h3 className="text-lg font-semibold mb-3">Preview</h3>
+            <p className="text-lg text-muted-foreground">
+              {languages.find(lang => lang.id === selectedLanguage)?.sample}
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Language Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
@@ -106,7 +111,7 @@ const LanguageSelection = () => {
             >
               <CardContent className="p-6 text-center">
                 <div className="text-4xl mb-4">{language.flag}</div>
-                <h3 className="text-xl font-bold text-secondary mb-2">
+                <h3 className="text-xl font-bold text-foreground mb-2">
                   {language.name}
                 </h3>
                 <p className="text-lg text-muted-foreground mb-4">
@@ -146,10 +151,11 @@ const LanguageSelection = () => {
         {/* Save Button */}
         <div className="text-center mb-8">
           <Button 
+            onClick={handleSave}
             className="bg-gradient-to-r from-primary to-primary-hover hover:scale-105 transition-transform px-12 py-3 text-lg"
-            disabled={!selectedLanguage}
+            disabled={!selectedLanguage || isLoading}
           >
-            Save Language Preference
+            {isLoading ? "Saving..." : "Save Language Preference"}
           </Button>
         </div>
       </div>
