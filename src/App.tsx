@@ -31,6 +31,15 @@ import SelectHotels from "./pages/SelectHotels";
 import SelectActivities from "./pages/SelectActivities";
 import BookingReview from "./pages/BookingReview";
 import BookingPayment from "./pages/BookingPayment";
+import BookingConfirmation from "./pages/BookingConfirmation";
+import PostBookingItinerary from "./pages/PostBookingItinerary";
+import CancellationRequest from "./pages/CancellationRequest";
+import RefundStatus from "./pages/RefundStatus";
+import TravelDocuments from "./pages/TravelDocuments";
+import Notifications from "./pages/Notifications";
+import HelpCenter from "./pages/HelpCenter";
+import SupportChat from "./pages/SupportChat";
+import Feedback from "./pages/Feedback";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -160,6 +169,39 @@ const App = () => (
                 <BookingPayment />
               </ProtectedRoute>
             } />
+            <Route path="/booking/:groupId/confirmation" element={
+              <ProtectedRoute message="Please login to view your booking confirmation.">
+                <BookingConfirmation />
+              </ProtectedRoute>
+            } />
+            <Route path="/groups/:groupId/itinerary/post-booking" element={
+              <ProtectedRoute message="Login to view your booked itinerary and updates.">
+                <PostBookingItinerary />
+              </ProtectedRoute>
+            } />
+            <Route path="/booking/:groupId/cancel" element={
+              <ProtectedRoute message="Login to request cancellations or refunds.">
+                <CancellationRequest />
+              </ProtectedRoute>
+            } />
+            <Route path="/booking/:groupId/refund-status" element={
+              <ProtectedRoute message="Login to track refund status.">
+                <RefundStatus />
+              </ProtectedRoute>
+            } />
+            <Route path="/groups/:groupId/documents" element={
+              <ProtectedRoute message="Login to upload travel documents.">
+                <TravelDocuments />
+              </ProtectedRoute>
+            } />
+            <Route path="/notifications" element={
+              <ProtectedRoute message="Login to view your notifications.">
+                <Notifications />
+              </ProtectedRoute>
+            } />
+            <Route path="/help" element={<HelpCenter />} />
+            <Route path="/help/chat" element={<SupportChat />} />
+            <Route path="/feedback" element={<Feedback />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
