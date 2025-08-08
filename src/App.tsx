@@ -16,7 +16,7 @@ import PartnerPublicRoute from "./components/auth/PartnerPublicRoute";
 import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
 import AdminPublicRoute from "./components/auth/AdminPublicRoute";
 
-// User Pages
+// ===== USER PAGES (34) =====
 import Index from "./pages/Index";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
@@ -54,7 +54,7 @@ import Feedback from "./pages/Feedback";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 
-// Partner Pages
+// ===== PARTNER PAGES (9) =====
 import PartnerLogin from "./pages/partner/PartnerLogin";
 import PartnerSignup from "./pages/partner/PartnerSignup";
 import PartnerDashboard from "./pages/partner/PartnerDashboard";
@@ -62,12 +62,25 @@ import PartnerServices from "./pages/partner/PartnerServices";
 import PartnerBookings from "./pages/partner/PartnerBookings";
 import PartnerRefunds from "./pages/partner/PartnerRefunds";
 import PartnerProfile from "./pages/partner/PartnerProfile";
+import PartnerAnalytics from "./pages/partner/PartnerAnalytics";
+import PartnerSupport from "./pages/partner/PartnerSupport";
 
-// Admin Pages
+// ===== ADMIN PAGES (15) =====
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminUserManagement from "./pages/admin/AdminUserManagement";
+import AdminGroups from "./pages/admin/AdminGroups";
+import AdminBookings from "./pages/admin/AdminBookings";
+import AdminProviders from "./pages/admin/AdminProviders";
 import AdminRefunds from "./pages/admin/AdminRefunds";
+import AdminContent from "./pages/admin/AdminContent";
+import AdminLanguages from "./pages/admin/AdminLanguages";
+import AdminReports from "./pages/admin/AdminReports";
+import AdminAIChatbot from "./pages/admin/AdminAIChatbot";
+import AdminSettings from "./pages/admin/AdminSettings";
+import AdminSupport from "./pages/admin/AdminSupport";
+import AdminAuditLogs from "./pages/admin/AdminAuditLogs";
+import AdminNotifications from "./pages/admin/AdminNotifications";
 
 const queryClient = new QueryClient();
 
@@ -83,7 +96,7 @@ const App = () => (
                 <Sonner />
                 <BrowserRouter>
                   <Routes>
-                    {/* Public Routes */}
+                    {/* ===== PUBLIC ROUTES ===== */}
                     <Route path="/" element={<Index />} />
                     <Route path="/language" element={<LanguageSelection />} />
                     <Route path="/help" element={<HelpCenter />} />
@@ -91,7 +104,7 @@ const App = () => (
                     <Route path="/feedback" element={<Feedback />} />
                     <Route path="/privacy" element={<PrivacyPolicy />} />
 
-                    {/* User Authentication Routes */}
+                    {/* ===== USER AUTHENTICATION ROUTES ===== */}
                     <Route path="/signup" element={
                       <PublicRoute message="You are already logged in. Redirecting to dashboard.">
                         <Signup />
@@ -108,7 +121,7 @@ const App = () => (
                       </PublicRoute>
                     } />
 
-                    {/* User Protected Routes */}
+                    {/* ===== USER PROTECTED ROUTES ===== */}
                     <Route path="/dashboard" element={
                       <ProtectedRoute message="Please login to access your dashboard.">
                         <Dashboard />
@@ -130,7 +143,7 @@ const App = () => (
                       </ProtectedRoute>
                     } />
 
-                    {/* Group Management Routes */}
+                    {/* ===== GROUP MANAGEMENT ROUTES ===== */}
                     <Route path="/groups/new" element={
                       <ProtectedRoute message="Login to create a new group trip.">
                         <CreateGroup />
@@ -177,7 +190,7 @@ const App = () => (
                       </ProtectedRoute>
                     } />
 
-                    {/* Itinerary Routes */}
+                    {/* ===== ITINERARY ROUTES ===== */}
                     <Route path="/groups/:groupId/itinerary/edit" element={
                       <ProtectedRoute message="Login to view and edit the itinerary.">
                         <ItineraryBuilder />
@@ -194,7 +207,7 @@ const App = () => (
                       </ProtectedRoute>
                     } />
 
-                    {/* Booking Routes */}
+                    {/* ===== BOOKING ROUTES ===== */}
                     <Route path="/booking/:groupId/start" element={
                       <ProtectedRoute message="Please login to start booking your trip.">
                         <BookingStart />
@@ -246,7 +259,7 @@ const App = () => (
                       </ProtectedRoute>
                     } />
 
-                    {/* Partner Portal Routes */}
+                    {/* ===== PARTNER PORTAL ROUTES (9) ===== */}
                     <Route path="/partner/login" element={
                       <PartnerPublicRoute message="You are already logged in to the partner portal.">
                         <PartnerLogin />
@@ -277,13 +290,23 @@ const App = () => (
                         <PartnerRefunds />
                       </PartnerProtectedRoute>
                     } />
+                    <Route path="/partner/analytics" element={
+                      <PartnerProtectedRoute message="Please login to view analytics.">
+                        <PartnerAnalytics />
+                      </PartnerProtectedRoute>
+                    } />
+                    <Route path="/partner/support" element={
+                      <PartnerProtectedRoute message="Please login to access support.">
+                        <PartnerSupport />
+                      </PartnerProtectedRoute>
+                    } />
                     <Route path="/partner/profile" element={
                       <PartnerProtectedRoute message="Please login to edit your profile.">
                         <PartnerProfile />
                       </PartnerProtectedRoute>
                     } />
 
-                    {/* Admin Portal Routes */}
+                    {/* ===== ADMIN PORTAL ROUTES (15) ===== */}
                     <Route path="/admin/login" element={
                       <AdminPublicRoute message="You are already logged in to the admin panel.">
                         <AdminLogin />
@@ -299,13 +322,68 @@ const App = () => (
                         <AdminUserManagement />
                       </AdminProtectedRoute>
                     } />
+                    <Route path="/admin/groups" element={
+                      <AdminProtectedRoute message="Please login to access group management.">
+                        <AdminGroups />
+                      </AdminProtectedRoute>
+                    } />
+                    <Route path="/admin/bookings" element={
+                      <AdminProtectedRoute message="Please login to access booking management.">
+                        <AdminBookings />
+                      </AdminProtectedRoute>
+                    } />
+                    <Route path="/admin/providers" element={
+                      <AdminProtectedRoute message="Please login to access provider management.">
+                        <AdminProviders />
+                      </AdminProtectedRoute>
+                    } />
                     <Route path="/admin/refunds" element={
                       <AdminProtectedRoute message="Please login to access refund management.">
                         <AdminRefunds />
                       </AdminProtectedRoute>
                     } />
+                    <Route path="/admin/content" element={
+                      <AdminProtectedRoute message="Please login to access content management.">
+                        <AdminContent />
+                      </AdminProtectedRoute>
+                    } />
+                    <Route path="/admin/languages" element={
+                      <AdminProtectedRoute message="Please login to access language management.">
+                        <AdminLanguages />
+                      </AdminProtectedRoute>
+                    } />
+                    <Route path="/admin/reports" element={
+                      <AdminProtectedRoute message="Please login to access analytics & reports.">
+                        <AdminReports />
+                      </AdminProtectedRoute>
+                    } />
+                    <Route path="/admin/ai-chatbot" element={
+                      <AdminProtectedRoute message="Please login to access AI chatbot configuration.">
+                        <AdminAIChatbot />
+                      </AdminProtectedRoute>
+                    } />
+                    <Route path="/admin/settings" element={
+                      <AdminProtectedRoute message="Please login to access system settings.">
+                        <AdminSettings />
+                      </AdminProtectedRoute>
+                    } />
+                    <Route path="/admin/support" element={
+                      <AdminProtectedRoute message="Please login to access support ticket management.">
+                        <AdminSupport />
+                      </AdminProtectedRoute>
+                    } />
+                    <Route path="/admin/audit-logs" element={
+                      <AdminProtectedRoute message="Please login to access audit logs.">
+                        <AdminAuditLogs />
+                      </AdminProtectedRoute>
+                    } />
+                    <Route path="/admin/notifications" element={
+                      <AdminProtectedRoute message="Please login to access notification management.">
+                        <AdminNotifications />
+                      </AdminProtectedRoute>
+                    } />
 
-                    {/* Catch-all route - MUST be last */}
+                    {/* ===== CATCH-ALL ROUTE (MUST BE LAST) ===== */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                   <ChatBotWrapper />
