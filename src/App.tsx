@@ -29,6 +29,8 @@ import BookingStart from "./pages/BookingStart";
 import SelectFlights from "./pages/SelectFlights";
 import SelectHotels from "./pages/SelectHotels";
 import SelectActivities from "./pages/SelectActivities";
+import BookingReview from "./pages/BookingReview";
+import BookingPayment from "./pages/BookingPayment";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -131,6 +133,31 @@ const App = () => (
             <Route path="/booking/:groupId/start" element={
               <ProtectedRoute message="Please login to start booking your trip.">
                 <BookingStart />
+              </ProtectedRoute>
+            } />
+            <Route path="/booking/:groupId/flights" element={
+              <ProtectedRoute message="Please log in to search and book flights.">
+                <SelectFlights />
+              </ProtectedRoute>
+            } />
+            <Route path="/booking/:groupId/hotels" element={
+              <ProtectedRoute message="Login to search and book hotels.">
+                <SelectHotels />
+              </ProtectedRoute>
+            } />
+            <Route path="/booking/:groupId/activities" element={
+              <ProtectedRoute message="Login to browse and book activities.">
+                <SelectActivities />
+              </ProtectedRoute>
+            } />
+            <Route path="/booking/:groupId/review" element={
+              <ProtectedRoute message="Login to review and confirm your bookings.">
+                <BookingReview />
+              </ProtectedRoute>
+            } />
+            <Route path="/booking/:groupId/payment" element={
+              <ProtectedRoute message="Please login to complete payment.">
+                <BookingPayment />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
