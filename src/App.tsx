@@ -20,6 +20,8 @@ import PartnerRefunds from "./pages/partner/PartnerRefunds";
 import PartnerProfile from "./pages/partner/PartnerProfile";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUserManagement from "./pages/admin/AdminUserManagement";
+import AdminRefunds from "./pages/admin/AdminRefunds";
 import ChatBotWrapper from "./components/chatbot/ChatBotWrapper";
 import ErrorBoundary from "./components/ui/error-boundary";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -273,6 +275,16 @@ const App = () => (
             <Route path="/admin/dashboard" element={
               <AdminProtectedRoute message="Please login to access the admin panel.">
                 <AdminDashboard />
+              </AdminProtectedRoute>
+            } />
+            <Route path="/admin/users" element={
+              <AdminProtectedRoute message="Please login to access user management.">
+                <AdminUserManagement />
+              </AdminProtectedRoute>
+            } />
+            <Route path="/admin/refunds" element={
+              <AdminProtectedRoute message="Please login to access refund management.">
+                <AdminRefunds />
               </AdminProtectedRoute>
             } />
             
