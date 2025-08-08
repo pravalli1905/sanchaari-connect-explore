@@ -5,6 +5,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { BookingProvider } from "./contexts/BookingContext";
+import { PartnerAuthProvider } from "./contexts/PartnerAuthContext";
+import PartnerProtectedRoute from "./components/auth/PartnerProtectedRoute";
+import PartnerPublicRoute from "./components/auth/PartnerPublicRoute";
+import PartnerLogin from "./pages/partner/PartnerLogin";
+import PartnerSignup from "./pages/partner/PartnerSignup";
+import PartnerDashboard from "./pages/partner/PartnerDashboard";
 import ChatBotWrapper from "./components/chatbot/ChatBotWrapper";
 import ErrorBoundary from "./components/ui/error-boundary";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -52,8 +58,9 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ErrorBoundary>
       <AuthProvider>
-        <BookingProvider>
-          <TooltipProvider>
+        <PartnerAuthProvider>
+          <BookingProvider>
+            <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -209,14 +216,33 @@ const App = () => (
             <Route path="/help/chat" element={<SupportChat />} />
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            
+            {/* Partner Portal Routes */}
+            <Route path="/partner/login" element={
+              <PartnerPublicRoute message="You are already logged in to the partner portal.">
+                <PartnerLogin />
+              </PartnerPublicRoute>
+            } />
+            <Route path="/partner/signup" element={
+              <PartnerPublicRoute message="You are already logged in to the partner portal.">
+                <PartnerSignup />
+              </PartnerPublicRoute>
+            } />
+            <Route path="/partner/dashboard" element={
+              <PartnerProtectedRoute message="Please login to access your partner dashboard.">
+                <PartnerDashboard />
+              </PartnerProtectedRoute>
+            } />
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
             </Routes>
             <ChatBotWrapper />
           </BrowserRouter>
-        </TooltipProvider>
-      </BookingProvider>
-    </AuthProvider>
+            </TooltipProvider>
+          </BookingProvider>
+        </PartnerAuthProvider>
+      </AuthProvider>
     </ErrorBoundary>
   </QueryClientProvider>
 );

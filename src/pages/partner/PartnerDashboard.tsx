@@ -1,253 +1,219 @@
-import React from 'react';
-import { usePartnerAuth } from '@/contexts/PartnerAuthContext';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Link } from 'react-router-dom';
-import {
-  Bell,
-  Calendar,
-  DollarSign,
+import PartnerNavbar from '@/components/partner/PartnerNavbar';
+import { 
+  DollarSign, 
+  Calendar, 
+  TrendingUp, 
+  AlertCircle, 
+  Users, 
   Package,
-  TrendingUp,
-  Users,
-  AlertCircle,
+  RefreshCw,
   Plus,
-  Settings,
-  FileText
+  ArrowRight
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { usePartnerAuth } from '@/contexts/PartnerAuthContext';
 
 const PartnerDashboard = () => {
-  const { partner } = usePartnerAuth();
-
-  const stats = [
-    {
-      title: 'New Bookings',
-      value: '12',
-      change: '+20%',
-      icon: Calendar,
-      color: 'text-blue-600'
+  const navigate = useNavigate();
+  const { user } = usePartnerAuth();
+  const [dashboardData, setDashboardData] = useState({
+    bookings: {
+      new: 12,
+      confirmed: 45,
+      cancelled: 3
     },
-    {
-      title: 'Confirmed Bookings',
-      value: '84',
-      change: '+12%',
-      icon: Users,
-      color: 'text-green-600'
+    revenue: {
+      weekly: 125000,
+      monthly: 450000,
+      growth: 12.5
     },
-    {
-      title: 'Monthly Revenue',
-      value: '₹2,45,000',
-      change: '+8%',
-      icon: DollarSign,
-      color: 'text-partner-accent'
-    },
-    {
-      title: 'Active Services',
-      value: '15',
-      change: '+2',
-      icon: Package,
-      color: 'text-purple-600'
-    }
-  ];
-
-  const quickActions = [
-    {
-      title: 'Manage Services',
-      description: 'Add, edit, or remove your service listings',
-      href: '/partner/services',
-      icon: Package,
-      color: 'bg-blue-50 text-blue-600'
-    },
-    {
-      title: 'View Bookings',
-      description: 'Review and manage incoming bookings',
-      href: '/partner/bookings',
-      icon: Calendar,
-      color: 'bg-green-50 text-green-600'
-    },
-    {
-      title: 'Handle Refunds',
-      description: 'Process refund requests from customers',
-      href: '/partner/refunds',
-      icon: DollarSign,
-      color: 'bg-orange-50 text-orange-600'
-    },
-    {
-      title: 'Analytics',
-      description: 'View performance reports and insights',
-      href: '/partner/analytics',
-      icon: TrendingUp,
-      color: 'bg-purple-50 text-purple-600'
-    }
-  ];
-
-  const alerts = [
-    {
-      id: 1,
-      message: '3 new booking requests require confirmation',
-      type: 'warning',
-      time: '2 hours ago'
-    },
-    {
-      id: 2,
-      message: 'System maintenance scheduled for tonight',
-      type: 'info',
-      time: '4 hours ago'
-    },
-    {
-      id: 3,
-      message: '2 refund requests pending review',
-      type: 'warning',
-      time: '1 day ago'
-    }
-  ];
+    alerts: [
+      { id: 1, type: 'booking', message: 'New booking request from Mumbai group', urgent: true },
+      { id: 2, type: 'refund', message: '₹15,000 refund request pending', urgent: false },
+      { id: 3, type: 'approval', message: 'Hotel listing approved and live', urgent: false }
+    ]
+  });
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="bg-partner-primary text-partner-primary-foreground p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Partner Dashboard</h1>
-              <p className="text-partner-primary-foreground/80 mt-1">
-                Welcome back, {partner?.contact_person}
-              </p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-partner-primary">
-                <Bell className="h-4 w-4 mr-2" />
-                Notifications
-                <Badge variant="destructive" className="ml-2">3</Badge>
-              </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-partner-primary">
-                <Settings className="h-4 w-4 mr-2" />
-                Settings
-              </Button>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      <PartnerNavbar />
+      
+      <div className="p-6 max-w-7xl mx-auto">
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Welcome back, {user?.user_metadata?.contact_person || 'Partner'}!
+          </h1>
+          <p className="text-gray-600">
+            {user?.user_metadata?.company_name || 'Your Company'} - Partner Dashboard
+          </p>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto p-6">
-        {/* Stats Grid */}
+        {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
-                    <p className="text-2xl font-bold">{stat.value}</p>
-                    <p className="text-sm text-green-600">{stat.change} from last month</p>
-                  </div>
-                  <stat.icon className={`h-8 w-8 ${stat.color}`} />
+          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-blue-100">New Bookings</p>
+                  <p className="text-3xl font-bold">{dashboardData.bookings.new}</p>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+                <Calendar className="h-8 w-8 text-blue-100" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-green-100">Confirmed</p>
+                  <p className="text-3xl font-bold">{dashboardData.bookings.confirmed}</p>
+                </div>
+                <Users className="h-8 w-8 text-green-100" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-partner-accent to-orange-600 text-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-orange-100">Monthly Revenue</p>
+                  <p className="text-3xl font-bold">₹{(dashboardData.revenue.monthly / 1000).toFixed(0)}K</p>
+                </div>
+                <DollarSign className="h-8 w-8 text-orange-100" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-purple-100">Growth</p>
+                  <p className="text-3xl font-bold">+{dashboardData.revenue.growth}%</p>
+                </div>
+                <TrendingUp className="h-8 w-8 text-purple-100" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Quick Actions */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Plus className="h-5 w-5 mr-2" />
-                  Quick Actions
-                </CardTitle>
-                <CardDescription>
-                  Manage your services and bookings efficiently
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {quickActions.map((action, index) => (
-                    <Link key={index} to={action.href}>
-                      <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                        <CardContent className="p-4">
-                          <div className="flex items-start space-x-3">
-                            <div className={`p-2 rounded-lg ${action.color}`}>
-                              <action.icon className="h-5 w-5" />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold">{action.title}</h3>
-                              <p className="text-sm text-muted-foreground">{action.description}</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Package className="h-5 w-5" />
+                <span>Quick Actions</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Button 
+                  onClick={() => navigate('/partner/services')}
+                  className="h-auto p-4 bg-partner-primary hover:bg-partner-primary/90 flex-col items-start"
+                >
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Package className="h-5 w-5" />
+                    <span className="font-semibold">Manage Services</span>
+                  </div>
+                  <p className="text-sm text-left opacity-90">
+                    Add, edit, or manage your service listings
+                  </p>
+                </Button>
+
+                <Button 
+                  onClick={() => navigate('/partner/bookings')}
+                  className="h-auto p-4 bg-partner-accent hover:bg-partner-accent/90 flex-col items-start"
+                >
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Calendar className="h-5 w-5" />
+                    <span className="font-semibold">View Bookings</span>
+                  </div>
+                  <p className="text-sm text-left opacity-90">
+                    Manage incoming booking requests
+                  </p>
+                </Button>
+
+                <Button 
+                  onClick={() => navigate('/partner/refunds')}
+                  className="h-auto p-4 bg-green-600 hover:bg-green-700 flex-col items-start"
+                >
+                  <div className="flex items-center space-x-2 mb-2">
+                    <RefreshCw className="h-5 w-5" />
+                    <span className="font-semibold">Refunds</span>
+                  </div>
+                  <p className="text-sm text-left opacity-90">
+                    Process cancellation requests
+                  </p>
+                </Button>
+
+                <Button 
+                  onClick={() => navigate('/partner/analytics')}
+                  className="h-auto p-4 bg-purple-600 hover:bg-purple-700 flex-col items-start"
+                >
+                  <div className="flex items-center space-x-2 mb-2">
+                    <TrendingUp className="h-5 w-5" />
+                    <span className="font-semibold">Analytics</span>
+                  </div>
+                  <p className="text-sm text-left opacity-90">
+                    View performance reports
+                  </p>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Alerts & Notifications */}
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <AlertCircle className="h-5 w-5 mr-2" />
-                  Recent Alerts
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {alerts.map((alert) => (
-                    <div key={alert.id} className="p-3 rounded-lg bg-orange-50 border border-orange-200">
-                      <p className="text-sm font-medium text-orange-800">{alert.message}</p>
-                      <p className="text-xs text-orange-600 mt-1">{alert.time}</p>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <AlertCircle className="h-5 w-5" />
+                  <span>Alerts</span>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => navigate('/partner/notifications')}
+                >
+                  View All
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {dashboardData.alerts.map((alert) => (
+                <div 
+                  key={alert.id}
+                  className="flex items-start space-x-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+                >
+                  <div className={`flex-shrink-0 w-2 h-2 rounded-full mt-2 ${
+                    alert.urgent ? 'bg-red-500' : 'bg-blue-500'
+                  }`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900">
+                      {alert.message}
+                    </p>
+                    <div className="flex items-center justify-between mt-1">
+                      {alert.urgent && (
+                        <Badge variant="destructive" className="text-xs">
+                          Urgent
+                        </Badge>
+                      )}
+                      <ArrowRight className="h-4 w-4 text-gray-400" />
                     </div>
-                  ))}
-                  <Link to="/partner/notifications">
-                    <Button variant="outline" className="w-full mt-4">
-                      View All Notifications
-                    </Button>
-                  </Link>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              ))}
+            </CardContent>
+          </Card>
         </div>
-
-        {/* Recent Activity */}
-        <Card className="mt-6">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <FileText className="h-5 w-5 mr-2" />
-              Recent Activity
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between py-2 border-b">
-                <div>
-                  <p className="font-medium">New booking for "Goa Beach Resort"</p>
-                  <p className="text-sm text-muted-foreground">Group of 6 guests, check-in: Dec 25</p>
-                </div>
-                <Badge variant="secondary">2 hours ago</Badge>
-              </div>
-              <div className="flex items-center justify-between py-2 border-b">
-                <div>
-                  <p className="font-medium">Service "Adventure Trek Package" approved</p>
-                  <p className="text-sm text-muted-foreground">Now available for booking</p>
-                </div>
-                <Badge variant="secondary">1 day ago</Badge>
-              </div>
-              <div className="flex items-center justify-between py-2">
-                <div>
-                  <p className="font-medium">Refund processed for booking #BK12345</p>
-                  <p className="text-sm text-muted-foreground">Amount: ₹15,000</p>
-                </div>
-                <Badge variant="secondary">2 days ago</Badge>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

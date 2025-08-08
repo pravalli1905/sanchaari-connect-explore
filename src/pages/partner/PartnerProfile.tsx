@@ -1,346 +1,202 @@
-import React, { useState } from 'react';
-import { usePartnerAuth } from '@/contexts/PartnerAuthContext';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
+import PartnerNavbar from '@/components/partner/PartnerNavbar';
+import { usePartnerAuth } from '@/contexts/PartnerAuthContext';
+import { Building, User, Mail, Phone, MapPin, CreditCard } from 'lucide-react';
 import { toast } from 'sonner';
-import {
-  User,
-  Building,
-  CreditCard,
-  FileText,
-  Upload,
-  Save,
-  Eye,
-  EyeOff
-} from 'lucide-react';
 
 const PartnerProfile = () => {
-  const { partner } = usePartnerAuth();
-  const [isEditing, setIsEditing] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const { user, updateProfile } = usePartnerAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    companyName: partner?.company_name || '',
-    contactPerson: partner?.contact_person || '',
-    email: partner?.email || '',
-    phone: partner?.phone || '',
+    companyName: user?.user_metadata?.company_name || '',
+    contactPerson: user?.user_metadata?.contact_person || '',
+    email: user?.email || '',
+    phone: '',
     businessAddress: '',
-    taxInfo: '',
-    bankAccountNumber: '',
-    bankIfscCode: '',
     bankName: '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    bankAccount: '',
+    ifscCode: ''
   });
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    // Implementation for saving profile data
-    toast.success('Profile updated successfully!');
-    setIsEditing(false);
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    try {
+      const { error } = await updateProfile({
+        business_address: formData.businessAddress,
+        bank_name: formData.bankName,
+        bank_account_number: formData.bankAccount,
+        bank_ifsc_code: formData.ifscCode
+      });
 
-  const handlePasswordChange = () => {
-    if (formData.newPassword !== formData.confirmPassword) {
-      toast.error('New passwords do not match');
-      return;
+      if (error) {
+        toast.error('Failed to update profile');
+      } else {
+        toast.success('Profile updated successfully');
+      }
+    } catch (error) {
+      toast.error('An error occurred');
+    } finally {
+      setIsLoading(false);
     }
-    // Implementation for password change
-    toast.success('Password changed successfully!');
-    setFormData(prev => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }));
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="bg-partner-primary text-partner-primary-foreground p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Profile Management</h1>
-              <p className="text-partner-primary-foreground/80 mt-1">
-                Manage your company information and settings
-              </p>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Badge className={partner?.status === 'active' ? 'bg-green-600' : 'bg-yellow-600'}>
-                {partner?.status}
-              </Badge>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-4xl mx-auto p-6">
-        <Tabs defaultValue="company" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="company" className="flex items-center space-x-2">
-              <Building className="h-4 w-4" />
-              <span>Company Info</span>
-            </TabsTrigger>
-            <TabsTrigger value="banking" className="flex items-center space-x-2">
-              <CreditCard className="h-4 w-4" />
-              <span>Banking</span>
-            </TabsTrigger>
-            <TabsTrigger value="documents" className="flex items-center space-x-2">
-              <FileText className="h-4 w-4" />
-              <span>Documents</span>
-            </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center space-x-2">
-              <User className="h-4 w-4" />
-              <span>Security</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="company">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Company Information</CardTitle>
-                    <CardDescription>
-                      Update your company details and contact information
-                    </CardDescription>
-                  </div>
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsEditing(!isEditing)}
-                  >
-                    {isEditing ? 'Cancel' : 'Edit'}
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="companyName">Company Name</Label>
+    <div className="min-h-screen bg-gray-50">
+      <PartnerNavbar />
+      
+      <div className="p-6 max-w-4xl mx-auto">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Building className="h-6 w-6" />
+              <span>Partner Profile</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="companyName">Company Name</Label>
+                  <div className="relative">
+                    <Building className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="companyName"
+                      name="companyName"
                       value={formData.companyName}
-                      onChange={(e) => handleInputChange('companyName', e.target.value)}
-                      disabled={!isEditing}
+                      onChange={handleInputChange}
+                      className="pl-10"
+                      disabled
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="contactPerson">Contact Person</Label>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="contactPerson">Contact Person</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="contactPerson"
+                      name="contactPerson"
                       value={formData.contactPerson}
-                      onChange={(e) => handleInputChange('contactPerson', e.target.value)}
-                      disabled={!isEditing}
+                      onChange={handleInputChange}
+                      className="pl-10"
+                      disabled
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="email"
+                      name="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      disabled={!isEditing}
+                      className="pl-10"
+                      disabled
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="phone"
+                      name="phone"
                       value={formData.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      disabled={!isEditing}
+                      onChange={handleInputChange}
+                      className="pl-10"
+                      placeholder="Enter phone number"
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="businessAddress">Business Address</Label>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="businessAddress">Business Address</Label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Textarea
                     id="businessAddress"
+                    name="businessAddress"
                     value={formData.businessAddress}
-                    onChange={(e) => handleInputChange('businessAddress', e.target.value)}
-                    disabled={!isEditing}
-                    placeholder="Enter your complete business address"
-                    rows={3}
+                    onChange={handleInputChange}
+                    className="pl-10 min-h-20"
+                    placeholder="Enter complete business address"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="taxInfo">Tax Information</Label>
-                  <Input
-                    id="taxInfo"
-                    value={formData.taxInfo}
-                    onChange={(e) => handleInputChange('taxInfo', e.target.value)}
-                    disabled={!isEditing}
-                    placeholder="GST Number, PAN, etc."
-                  />
-                </div>
-                {isEditing && (
-                  <Button onClick={handleSave} className="bg-partner-primary hover:bg-partner-primary/90">
-                    <Save className="h-4 w-4 mr-2" />
-                    Save Changes
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
+              </div>
 
-          <TabsContent value="banking">
-            <Card>
-              <CardHeader>
-                <CardTitle>Banking Information</CardTitle>
-                <CardDescription>
-                  Manage your payment details for receiving payments
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
+                  <CreditCard className="h-5 w-5" />
+                  <span>Bank Details</span>
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="bankName">Bank Name</Label>
                     <Input
                       id="bankName"
+                      name="bankName"
                       value={formData.bankName}
-                      onChange={(e) => handleInputChange('bankName', e.target.value)}
-                      placeholder="Enter bank name"
+                      onChange={handleInputChange}
+                      placeholder="Bank name"
                     />
                   </div>
+
                   <div className="space-y-2">
-                    <Label htmlFor="bankAccountNumber">Account Number</Label>
+                    <Label htmlFor="bankAccount">Account Number</Label>
                     <Input
-                      id="bankAccountNumber"
-                      value={formData.bankAccountNumber}
-                      onChange={(e) => handleInputChange('bankAccountNumber', e.target.value)}
-                      placeholder="Enter account number"
+                      id="bankAccount"
+                      name="bankAccount"
+                      value={formData.bankAccount}
+                      onChange={handleInputChange}
+                      placeholder="Account number"
                     />
                   </div>
+
                   <div className="space-y-2">
-                    <Label htmlFor="bankIfscCode">IFSC Code</Label>
+                    <Label htmlFor="ifscCode">IFSC Code</Label>
                     <Input
-                      id="bankIfscCode"
-                      value={formData.bankIfscCode}
-                      onChange={(e) => handleInputChange('bankIfscCode', e.target.value)}
-                      placeholder="Enter IFSC code"
+                      id="ifscCode"
+                      name="ifscCode"
+                      value={formData.ifscCode}
+                      onChange={handleInputChange}
+                      placeholder="IFSC code"
                     />
                   </div>
                 </div>
-                <Button className="bg-partner-primary hover:bg-partner-primary/90">
-                  <Save className="h-4 w-4 mr-2" />
-                  Update Banking Details
+              </div>
+
+              <div className="flex space-x-4">
+                <Button 
+                  type="submit" 
+                  className="bg-partner-primary hover:bg-partner-primary/90"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Saving..." : "Save Changes"}
                 </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="documents">
-            <Card>
-              <CardHeader>
-                <CardTitle>Legal Documents & Certificates</CardTitle>
-                <CardDescription>
-                  Upload and manage your business documents
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <h3 className="font-semibold">Business License</h3>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                      <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-600">Click to upload or drag and drop</p>
-                      <p className="text-xs text-gray-500">PDF, JPG, PNG up to 10MB</p>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="font-semibold">Tax Certificate</h3>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                      <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-600">Click to upload or drag and drop</p>
-                      <p className="text-xs text-gray-500">PDF, JPG, PNG up to 10MB</p>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="font-semibold">Insurance Certificate</h3>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                      <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-600">Click to upload or drag and drop</p>
-                      <p className="text-xs text-gray-500">PDF, JPG, PNG up to 10MB</p>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="font-semibold">Other Certificates</h3>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                      <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-600">Click to upload or drag and drop</p>
-                      <p className="text-xs text-gray-500">PDF, JPG, PNG up to 10MB</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="security">
-            <Card>
-              <CardHeader>
-                <CardTitle>Security Settings</CardTitle>
-                <CardDescription>
-                  Manage your password and security preferences
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="currentPassword">Current Password</Label>
-                    <div className="relative">
-                      <Input
-                        id="currentPassword"
-                        type={showPassword ? 'text' : 'password'}
-                        value={formData.currentPassword}
-                        onChange={(e) => handleInputChange('currentPassword', e.target.value)}
-                        placeholder="Enter current password"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="newPassword">New Password</Label>
-                    <Input
-                      id="newPassword"
-                      type="password"
-                      value={formData.newPassword}
-                      onChange={(e) => handleInputChange('newPassword', e.target.value)}
-                      placeholder="Enter new password"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      value={formData.confirmPassword}
-                      onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                      placeholder="Confirm new password"
-                    />
-                  </div>
-                  <Button onClick={handlePasswordChange} className="bg-partner-primary hover:bg-partner-primary/90">
-                    Change Password
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

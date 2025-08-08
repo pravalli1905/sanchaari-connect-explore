@@ -1,22 +1,31 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { Session, User } from '@supabase/supabase-js';
 
-interface Partner {
+interface PartnerProfile {
   id: string;
-  email: string;
-  company_name: string;
-  contact_person: string;
-  phone?: string;
-  status: 'active' | 'pending' | 'suspended';
+  partner_id: string;
+  bank_account_number: string;
+  bank_ifsc_code: string;
+  bank_name: string;
+  business_address: string;
+  certificates: string[];
+  legal_documents: string[];
+  tax_info: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface PartnerAuthContextType {
   isAuthenticated: boolean;
-  partner: Partner | null;
-  login: (email: string, password: string) => Promise<{ error: string | null }>;
-  register: (email: string, password: string, companyName: string, contactPerson: string, phone?: string) => Promise<{ error: string | null }>;
-  logout: () => void;
+  user: User | null;
+  session: Session | null;
+  partnerProfile: PartnerProfile | null;
   isLoading: boolean;
+  login: (email: string, password: string) => Promise<{ error?: any }>;
+  signup: (email: string, password: string, companyName: string, contactPerson: string) => Promise<{ error?: any }>;
+  logout: () => Promise<void>;
+  updateProfile: (updates: Partial<PartnerProfile>) => Promise<{ error?: any }>;
 }
 
 const PartnerAuthContext = createContext<PartnerAuthContextType | undefined>(undefined);
@@ -30,88 +39,123 @@ export const usePartnerAuth = () => {
 };
 
 export const PartnerAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [partner, setPartner] = useState<Partner | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [partnerProfile, setPartnerProfile] = useState<PartnerProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check for existing partner session on mount
-  useEffect(() => {
-    const storedPartnerAuth = localStorage.getItem('sanchaari_partner_auth');
-    if (storedPartnerAuth) {
-      const authData = JSON.parse(storedPartnerAuth);
-      setIsAuthenticated(true);
-      setPartner(authData.partner);
+  const fetchPartnerProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('partner_profiles')
+        .select('*')
+        .eq('partner_id', userId)
+        .single();
+
+      if (error) throw error;
+      setPartnerProfile(data);
+    } catch (error) {
+      console.error('Error fetching partner profile:', error);
     }
-    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          await fetchPartnerProfile(session.user.id);
+        } else {
+          setPartnerProfile(null);
+        }
+        
+        setIsLoading(false);
+      }
+    );
+
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        fetchPartnerProfile(session.user.id);
+      }
+      
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string) => {
-    try {
-      // For now, using mock authentication
-      // In a real app, you'd verify against the database
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockPartner: Partner = {
-        id: '1',
-        email: email,
-        company_name: 'Travel Solutions Ltd',
-        contact_person: 'John Smith',
-        phone: '+91 9876543210',
-        status: 'active'
-      };
-
-      setPartner(mockPartner);
-      setIsAuthenticated(true);
-      
-      // Store in localStorage for persistence
-      localStorage.setItem('sanchaari_partner_auth', JSON.stringify({ partner: mockPartner }));
-      
-      return { error: null };
-    } catch (error) {
-      return { error: 'Login failed. Please check your credentials.' };
-    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    return { error };
   };
 
-  const register = async (email: string, password: string, companyName: string, contactPerson: string, phone?: string) => {
-    try {
-      // Mock registration - simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockPartner: Partner = {
-        id: '1',
-        email: email,
-        company_name: companyName,
-        contact_person: contactPerson,
-        phone: phone,
-        status: 'pending'
-      };
-
-      setPartner(mockPartner);
-      setIsAuthenticated(true);
-      
-      // Store in localStorage for persistence
-      localStorage.setItem('sanchaari_partner_auth', JSON.stringify({ partner: mockPartner }));
-      
-      return { error: null };
-    } catch (error) {
-      return { error: 'Registration failed. Please try again.' };
-    }
+  const signup = async (email: string, password: string, companyName: string, contactPerson: string) => {
+    const redirectUrl = `${window.location.origin}/partner/dashboard`;
+    
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: {
+          company_name: companyName,
+          contact_person: contactPerson,
+          user_type: 'partner'
+        }
+      }
+    });
+    return { error };
   };
 
-  const logout = () => {
-    setPartner(null);
-    setIsAuthenticated(false);
-    localStorage.removeItem('sanchaari_partner_auth');
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setPartnerProfile(null);
+  };
+
+  const updateProfile = async (updates: Partial<PartnerProfile>) => {
+    if (!user) return { error: 'No user found' };
+
+    try {
+      const { error } = await supabase
+        .from('partner_profiles')
+        .update(updates)
+        .eq('partner_id', user.id);
+
+      if (error) throw error;
+      
+      // Refresh profile data
+      await fetchPartnerProfile(user.id);
+      return {};
+    } catch (error) {
+      return { error };
+    }
   };
 
   const value = {
-    isAuthenticated,
-    partner,
+    isAuthenticated: !!session,
+    user,
+    session,
+    partnerProfile,
+    isLoading,
     login,
-    register,
+    signup,
     logout,
-    isLoading
+    updateProfile
   };
 
-  return <PartnerAuthContext.Provider value={value}>{children}</PartnerAuthContext.Provider>;
+  return (
+    <PartnerAuthContext.Provider value={value}>
+      {children}
+    </PartnerAuthContext.Provider>
+  );
 };

@@ -4,18 +4,22 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff, Building, Mail, Lock } from 'lucide-react';
+import { Eye, EyeOff, Building, Mail, Lock, User, Briefcase } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const PartnerLogin = () => {
+const PartnerSignup = () => {
   const [formData, setFormData] = useState({
+    companyName: '',
+    contactPerson: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = usePartnerAuth();
+  const { signup } = usePartnerAuth();
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,23 +30,38 @@ const PartnerLogin = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.email || !formData.password) {
+    if (!formData.companyName || !formData.contactPerson || !formData.email || !formData.password) {
       toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      toast.error('Password must be at least 6 characters');
       return;
     }
 
     setIsLoading(true);
     try {
-      const { error } = await login(formData.email, formData.password);
+      const { error } = await signup(
+        formData.email, 
+        formData.password, 
+        formData.companyName,
+        formData.contactPerson
+      );
       
       if (error) {
-        toast.error(error.message || 'Invalid credentials');
+        toast.error(error.message || 'Failed to create account');
       } else {
-        toast.success('Welcome back to Partner Portal!');
-        navigate('/partner/dashboard');
+        toast.success('Account created successfully! Please check your email to verify your account.');
+        navigate('/partner/login');
       }
     } catch (error) {
-      toast.error('An error occurred during login');
+      toast.error('An error occurred during signup');
     } finally {
       setIsLoading(false);
     }
@@ -59,16 +78,50 @@ const PartnerLogin = () => {
               </div>
             </div>
             <CardTitle className="text-2xl font-bold text-partner-primary">
-              Partner Portal Login
+              Partner Registration
             </CardTitle>
             <p className="text-muted-foreground">
-              Access your business dashboard and manage services
+              Join Sanchaari as a travel service partner
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="companyName">Company Name</Label>
+                <div className="relative">
+                  <Briefcase className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="companyName"
+                    name="companyName"
+                    type="text"
+                    placeholder="Enter your company name"
+                    value={formData.companyName}
+                    onChange={handleInputChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="contactPerson">Contact Person</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="contactPerson"
+                    name="contactPerson"
+                    type="text"
+                    placeholder="Enter contact person name"
+                    value={formData.contactPerson}
+                    onChange={handleInputChange}
+                    className="pl-10"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email">Business Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -92,7 +145,7 @@ const PartnerLogin = () => {
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder="Create a strong password"
                     value={formData.password}
                     onChange={handleInputChange}
                     className="pl-10 pr-10"
@@ -110,30 +163,49 @@ const PartnerLogin = () => {
                 </div>
               </div>
 
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    className="pl-10 pr-10"
+                    required
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </Button>
+                </div>
+              </div>
+
               <Button 
                 type="submit" 
                 className="w-full bg-partner-primary hover:bg-partner-primary/90"
                 disabled={isLoading}
               >
-                {isLoading ? "Signing In..." : "Sign In to Partner Portal"}
+                {isLoading ? "Creating Account..." : "Create Partner Account"}
               </Button>
             </form>
 
             <div className="text-center space-y-2">
-              <Link 
-                to="/partner/forgot-password" 
-                className="text-sm text-partner-primary hover:underline"
-              >
-                Forgot your password?
-              </Link>
-              
               <div className="text-sm text-muted-foreground">
-                New partner?{' '}
+                Already have an account?{' '}
                 <Link 
-                  to="/partner/signup" 
+                  to="/partner/login" 
                   className="text-partner-primary hover:underline font-medium"
                 >
-                  Register here
+                  Sign in here
                 </Link>
               </div>
             </div>
@@ -155,4 +227,4 @@ const PartnerLogin = () => {
   );
 };
 
-export default PartnerLogin;
+export default PartnerSignup;
