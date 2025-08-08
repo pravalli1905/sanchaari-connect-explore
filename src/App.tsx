@@ -16,6 +16,11 @@ import ChangePassword from "./pages/ChangePassword";
 import LanguageSelection from "./pages/LanguageSelection";
 import CreateGroup from "./pages/CreateGroup";
 import GroupOverview from "./pages/GroupOverview";
+import InviteMembers from "./pages/InviteMembers";
+import AcceptRejectInvites from "./pages/AcceptRejectInvites";
+import GroupChat from "./pages/GroupChat";
+import ItineraryBuilder from "./pages/ItineraryBuilder";
+import ItineraryView from "./pages/ItineraryView";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -68,6 +73,31 @@ const App = () => (
             <Route path="/groups/:groupId" element={
               <ProtectedRoute message="Please login to view group details.">
                 <GroupOverview />
+              </ProtectedRoute>
+            } />
+            <Route path="/groups/:groupId/invite" element={
+              <ProtectedRoute message="Please log in to invite members to your group.">
+                <InviteMembers />
+              </ProtectedRoute>
+            } />
+            <Route path="/groups/invites" element={
+              <ProtectedRoute message="You need to be logged in to accept or reject group invitations.">
+                <AcceptRejectInvites />
+              </ProtectedRoute>
+            } />
+            <Route path="/groups/:groupId/chat" element={
+              <ProtectedRoute message="Log in to chat and plan with your group.">
+                <GroupChat />
+              </ProtectedRoute>
+            } />
+            <Route path="/groups/:groupId/itinerary/edit" element={
+              <ProtectedRoute message="Login to view and edit the itinerary.">
+                <ItineraryBuilder />
+              </ProtectedRoute>
+            } />
+            <Route path="/groups/:groupId/itinerary" element={
+              <ProtectedRoute message="Login to view the full itinerary.">
+                <ItineraryView />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

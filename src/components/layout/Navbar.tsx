@@ -99,6 +99,12 @@ const Navbar = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link to="/groups/invites" className="flex items-center space-x-2">
+                      <Users size={16} />
+                      <span>Group Invites</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link to="/profile/change-password" className="flex items-center space-x-2">
                       <Settings size={16} />
                       <span>Settings</span>
