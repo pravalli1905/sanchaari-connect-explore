@@ -7,25 +7,16 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { BookingProvider } from "./contexts/BookingContext";
 import { PartnerAuthProvider } from "./contexts/PartnerAuthContext";
 import { AdminAuthProvider } from "./contexts/AdminAuthContext";
-import PartnerProtectedRoute from "./components/auth/PartnerProtectedRoute";
-import PartnerPublicRoute from "./components/auth/PartnerPublicRoute";
-import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
-import AdminPublicRoute from "./components/auth/AdminPublicRoute";
-import PartnerLogin from "./pages/partner/PartnerLogin";
-import PartnerSignup from "./pages/partner/PartnerSignup";
-import PartnerDashboard from "./pages/partner/PartnerDashboard";
-import PartnerServices from "./pages/partner/PartnerServices";
-import PartnerBookings from "./pages/partner/PartnerBookings";
-import PartnerRefunds from "./pages/partner/PartnerRefunds";
-import PartnerProfile from "./pages/partner/PartnerProfile";
-import AdminLogin from "./pages/admin/AdminLogin";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminUserManagement from "./pages/admin/AdminUserManagement";
-import AdminRefunds from "./pages/admin/AdminRefunds";
 import ChatBotWrapper from "./components/chatbot/ChatBotWrapper";
 import ErrorBoundary from "./components/ui/error-boundary";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PublicRoute from "./components/auth/PublicRoute";
+import PartnerProtectedRoute from "./components/auth/PartnerProtectedRoute";
+import PartnerPublicRoute from "./components/auth/PartnerPublicRoute";
+import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
+import AdminPublicRoute from "./components/auth/AdminPublicRoute";
+
+// User Pages
 import Index from "./pages/Index";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
@@ -63,6 +54,21 @@ import Feedback from "./pages/Feedback";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 
+// Partner Pages
+import PartnerLogin from "./pages/partner/PartnerLogin";
+import PartnerSignup from "./pages/partner/PartnerSignup";
+import PartnerDashboard from "./pages/partner/PartnerDashboard";
+import PartnerServices from "./pages/partner/PartnerServices";
+import PartnerBookings from "./pages/partner/PartnerBookings";
+import PartnerRefunds from "./pages/partner/PartnerRefunds";
+import PartnerProfile from "./pages/partner/PartnerProfile";
+
+// Admin Pages
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUserManagement from "./pages/admin/AdminUserManagement";
+import AdminRefunds from "./pages/admin/AdminRefunds";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -73,226 +79,237 @@ const App = () => (
           <AdminAuthProvider>
             <BookingProvider>
               <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/signup" element={
-              <PublicRoute message="You are already logged in. Redirecting to dashboard.">
-                <Signup />
-              </PublicRoute>
-            } />
-            <Route path="/login" element={
-              <PublicRoute message="You are already logged in. Redirecting to dashboard.">
-                <Login />
-              </PublicRoute>
-            } />
-            <Route path="/forgot-password" element={
-              <PublicRoute redirectTo="/profile/change-password" message="Use profile settings to change your password.">
-                <ForgotPassword />
-              </PublicRoute>
-            } />
-            <Route path="/dashboard" element={
-              <ProtectedRoute message="Please login to access your dashboard.">
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/profile" element={
-              <ProtectedRoute message="Please login to edit your profile.">
-                <Profile />
-              </ProtectedRoute>
-            } />
-            <Route path="/profile/change-password" element={
-              <ProtectedRoute message="Login required to change password.">
-                <ChangePassword />
-              </ProtectedRoute>
-            } />
-            <Route path="/language" element={<LanguageSelection />} />
-            <Route path="/groups/new" element={
-              <ProtectedRoute message="Login to create a new group trip.">
-                <CreateGroup />
-              </ProtectedRoute>
-            } />
-            <Route path="/groups/:groupId" element={
-              <ProtectedRoute message="Please login to view group details.">
-                <GroupOverview />
-              </ProtectedRoute>
-            } />
-            <Route path="/groups/:groupId/invite" element={
-              <ProtectedRoute message="Please log in to invite members to your group.">
-                <InviteMembers />
-              </ProtectedRoute>
-            } />
-            <Route path="/groups/invites" element={
-              <ProtectedRoute message="You need to be logged in to accept or reject group invitations.">
-                <AcceptRejectInvites />
-              </ProtectedRoute>
-            } />
-            <Route path="/groups/:groupId/chat" element={
-              <ProtectedRoute message="Log in to chat and plan with your group.">
-                <GroupChat />
-              </ProtectedRoute>
-            } />
-            <Route path="/groups/:groupId/itinerary/edit" element={
-              <ProtectedRoute message="Login to view and edit the itinerary.">
-                <ItineraryBuilder />
-              </ProtectedRoute>
-            } />
-            <Route path="/groups/:groupId/itinerary" element={
-              <ProtectedRoute message="Login to view the full itinerary.">
-                <ItineraryView />
-              </ProtectedRoute>
-            } />
-            <Route path="/groups/:groupId/preferences" element={
-              <ProtectedRoute message="Please log in to set or update your trip preferences.">
-                <GroupPreferences />
-              </ProtectedRoute>
-            } />
-            <Route path="/groups/:groupId/budget" element={
-              <ProtectedRoute message="Login to view and manage group budget.">
-                <GroupBudget />
-              </ProtectedRoute>
-            } />
-            <Route path="/groups/:groupId/members" element={
-              <ProtectedRoute message="Please log in to view and manage group members.">
-                <GroupMembers />
-              </ProtectedRoute>
-            } />
-            <Route path="/groups/:groupId/replan-status" element={
-              <ProtectedRoute message="Login to view trip re-optimization status.">
-                <ReplanStatus />
-              </ProtectedRoute>
-            } />
-            <Route path="/booking/:groupId/start" element={
-              <ProtectedRoute message="Please login to start booking your trip.">
-                <BookingStart />
-              </ProtectedRoute>
-            } />
-            <Route path="/booking/:groupId/flights" element={
-              <ProtectedRoute message="Please log in to search and book flights.">
-                <SelectFlights />
-              </ProtectedRoute>
-            } />
-            <Route path="/booking/:groupId/hotels" element={
-              <ProtectedRoute message="Login to search and book hotels.">
-                <SelectHotels />
-              </ProtectedRoute>
-            } />
-            <Route path="/booking/:groupId/activities" element={
-              <ProtectedRoute message="Login to browse and book activities.">
-                <SelectActivities />
-              </ProtectedRoute>
-            } />
-            <Route path="/booking/:groupId/review" element={
-              <ProtectedRoute message="Login to review and confirm your bookings.">
-                <BookingReview />
-              </ProtectedRoute>
-            } />
-            <Route path="/booking/:groupId/payment" element={
-              <ProtectedRoute message="Please login to complete payment.">
-                <BookingPayment />
-              </ProtectedRoute>
-            } />
-            <Route path="/booking/:groupId/confirmation" element={
-              <ProtectedRoute message="Please login to view your booking confirmation.">
-                <BookingConfirmation />
-              </ProtectedRoute>
-            } />
-            <Route path="/groups/:groupId/itinerary/post-booking" element={
-              <ProtectedRoute message="Login to view your booked itinerary and updates.">
-                <PostBookingItinerary />
-              </ProtectedRoute>
-            } />
-            <Route path="/booking/:groupId/cancel" element={
-              <ProtectedRoute message="Login to request cancellations or refunds.">
-                <CancellationRequest />
-              </ProtectedRoute>
-            } />
-            <Route path="/booking/:groupId/refund-status" element={
-              <ProtectedRoute message="Login to track refund status.">
-                <RefundStatus />
-              </ProtectedRoute>
-            } />
-            <Route path="/groups/:groupId/documents" element={
-              <ProtectedRoute message="Login to upload travel documents.">
-                <TravelDocuments />
-              </ProtectedRoute>
-            } />
-            <Route path="/notifications" element={
-              <ProtectedRoute message="Login to view your notifications.">
-                <Notifications />
-              </ProtectedRoute>
-            } />
-            <Route path="/help" element={<HelpCenter />} />
-            <Route path="/help/chat" element={<SupportChat />} />
-            <Route path="/feedback" element={<Feedback />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            
-            {/* Partner Portal Routes */}
-            <Route path="/partner/login" element={
-              <PartnerPublicRoute message="You are already logged in to the partner portal.">
-                <PartnerLogin />
-              </PartnerPublicRoute>
-            } />
-            <Route path="/partner/signup" element={
-              <PartnerPublicRoute message="You are already logged in to the partner portal.">
-                <PartnerSignup />
-              </PartnerPublicRoute>
-            } />
-            <Route path="/partner/dashboard" element={
-              <PartnerProtectedRoute message="Please login to access your partner dashboard.">
-                <PartnerDashboard />
-              </PartnerProtectedRoute>
-            } />
-            <Route path="/partner/services" element={
-              <PartnerProtectedRoute message="Please login to manage your services.">
-                <PartnerServices />
-              </PartnerProtectedRoute>
-            } />
-            <Route path="/partner/bookings" element={
-              <PartnerProtectedRoute message="Please login to view bookings.">
-                <PartnerBookings />
-              </PartnerProtectedRoute>
-            } />
-            <Route path="/partner/refunds" element={
-              <PartnerProtectedRoute message="Please login to manage refunds.">
-                <PartnerRefunds />
-              </PartnerProtectedRoute>
-            } />
-            <Route path="/partner/profile" element={
-              <PartnerProtectedRoute message="Please login to edit your profile.">
-                <PartnerProfile />
-              </PartnerProtectedRoute>
-            } />
-            
-            {/* Admin Portal Routes */}
-            <Route path="/admin/login" element={
-              <AdminPublicRoute message="You are already logged in to the admin panel.">
-                <AdminLogin />
-              </AdminPublicRoute>
-            } />
-            <Route path="/admin/dashboard" element={
-              <AdminProtectedRoute message="Please login to access the admin panel.">
-                <AdminDashboard />
-              </AdminProtectedRoute>
-            } />
-            <Route path="/admin/users" element={
-              <AdminProtectedRoute message="Please login to access user management.">
-                <AdminUserManagement />
-              </AdminProtectedRoute>
-            } />
-            <Route path="/admin/refunds" element={
-              <AdminProtectedRoute message="Please login to access refund management.">
-                <AdminRefunds />
-              </AdminProtectedRoute>
-            } />
-            
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-            </Routes>
-            <ChatBotWrapper />
-          </BrowserRouter>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
+                  <Routes>
+                    {/* Public Routes */}
+                    <Route path="/" element={<Index />} />
+                    <Route path="/language" element={<LanguageSelection />} />
+                    <Route path="/help" element={<HelpCenter />} />
+                    <Route path="/help/chat" element={<SupportChat />} />
+                    <Route path="/feedback" element={<Feedback />} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
+
+                    {/* User Authentication Routes */}
+                    <Route path="/signup" element={
+                      <PublicRoute message="You are already logged in. Redirecting to dashboard.">
+                        <Signup />
+                      </PublicRoute>
+                    } />
+                    <Route path="/login" element={
+                      <PublicRoute message="You are already logged in. Redirecting to dashboard.">
+                        <Login />
+                      </PublicRoute>
+                    } />
+                    <Route path="/forgot-password" element={
+                      <PublicRoute redirectTo="/profile/change-password" message="Use profile settings to change your password.">
+                        <ForgotPassword />
+                      </PublicRoute>
+                    } />
+
+                    {/* User Protected Routes */}
+                    <Route path="/dashboard" element={
+                      <ProtectedRoute message="Please login to access your dashboard.">
+                        <Dashboard />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/profile" element={
+                      <ProtectedRoute message="Please login to edit your profile.">
+                        <Profile />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/profile/change-password" element={
+                      <ProtectedRoute message="Login required to change password.">
+                        <ChangePassword />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/notifications" element={
+                      <ProtectedRoute message="Login to view your notifications.">
+                        <Notifications />
+                      </ProtectedRoute>
+                    } />
+
+                    {/* Group Management Routes */}
+                    <Route path="/groups/new" element={
+                      <ProtectedRoute message="Login to create a new group trip.">
+                        <CreateGroup />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/groups/:groupId" element={
+                      <ProtectedRoute message="Please login to view group details.">
+                        <GroupOverview />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/groups/:groupId/invite" element={
+                      <ProtectedRoute message="Please log in to invite members to your group.">
+                        <InviteMembers />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/groups/invites" element={
+                      <ProtectedRoute message="You need to be logged in to accept or reject group invitations.">
+                        <AcceptRejectInvites />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/groups/:groupId/chat" element={
+                      <ProtectedRoute message="Log in to chat and plan with your group.">
+                        <GroupChat />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/groups/:groupId/preferences" element={
+                      <ProtectedRoute message="Please log in to set or update your trip preferences.">
+                        <GroupPreferences />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/groups/:groupId/budget" element={
+                      <ProtectedRoute message="Login to view and manage group budget.">
+                        <GroupBudget />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/groups/:groupId/members" element={
+                      <ProtectedRoute message="Please log in to view and manage group members.">
+                        <GroupMembers />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/groups/:groupId/replan-status" element={
+                      <ProtectedRoute message="Login to view trip re-optimization status.">
+                        <ReplanStatus />
+                      </ProtectedRoute>
+                    } />
+
+                    {/* Itinerary Routes */}
+                    <Route path="/groups/:groupId/itinerary/edit" element={
+                      <ProtectedRoute message="Login to view and edit the itinerary.">
+                        <ItineraryBuilder />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/groups/:groupId/itinerary" element={
+                      <ProtectedRoute message="Login to view the full itinerary.">
+                        <ItineraryView />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/groups/:groupId/itinerary/post-booking" element={
+                      <ProtectedRoute message="Login to view your booked itinerary and updates.">
+                        <PostBookingItinerary />
+                      </ProtectedRoute>
+                    } />
+
+                    {/* Booking Routes */}
+                    <Route path="/booking/:groupId/start" element={
+                      <ProtectedRoute message="Please login to start booking your trip.">
+                        <BookingStart />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/booking/:groupId/flights" element={
+                      <ProtectedRoute message="Please log in to search and book flights.">
+                        <SelectFlights />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/booking/:groupId/hotels" element={
+                      <ProtectedRoute message="Login to search and book hotels.">
+                        <SelectHotels />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/booking/:groupId/activities" element={
+                      <ProtectedRoute message="Login to browse and book activities.">
+                        <SelectActivities />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/booking/:groupId/review" element={
+                      <ProtectedRoute message="Login to review and confirm your bookings.">
+                        <BookingReview />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/booking/:groupId/payment" element={
+                      <ProtectedRoute message="Please login to complete payment.">
+                        <BookingPayment />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/booking/:groupId/confirmation" element={
+                      <ProtectedRoute message="Please login to view your booking confirmation.">
+                        <BookingConfirmation />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/booking/:groupId/cancel" element={
+                      <ProtectedRoute message="Login to request cancellations or refunds.">
+                        <CancellationRequest />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/booking/:groupId/refund-status" element={
+                      <ProtectedRoute message="Login to track refund status.">
+                        <RefundStatus />
+                      </ProtectedRoute>
+                    } />
+                    <Route path="/groups/:groupId/documents" element={
+                      <ProtectedRoute message="Login to upload travel documents.">
+                        <TravelDocuments />
+                      </ProtectedRoute>
+                    } />
+
+                    {/* Partner Portal Routes */}
+                    <Route path="/partner/login" element={
+                      <PartnerPublicRoute message="You are already logged in to the partner portal.">
+                        <PartnerLogin />
+                      </PartnerPublicRoute>
+                    } />
+                    <Route path="/partner/signup" element={
+                      <PartnerPublicRoute message="You are already logged in to the partner portal.">
+                        <PartnerSignup />
+                      </PartnerPublicRoute>
+                    } />
+                    <Route path="/partner/dashboard" element={
+                      <PartnerProtectedRoute message="Please login to access your partner dashboard.">
+                        <PartnerDashboard />
+                      </PartnerProtectedRoute>
+                    } />
+                    <Route path="/partner/services" element={
+                      <PartnerProtectedRoute message="Please login to manage your services.">
+                        <PartnerServices />
+                      </PartnerProtectedRoute>
+                    } />
+                    <Route path="/partner/bookings" element={
+                      <PartnerProtectedRoute message="Please login to view bookings.">
+                        <PartnerBookings />
+                      </PartnerProtectedRoute>
+                    } />
+                    <Route path="/partner/refunds" element={
+                      <PartnerProtectedRoute message="Please login to manage refunds.">
+                        <PartnerRefunds />
+                      </PartnerProtectedRoute>
+                    } />
+                    <Route path="/partner/profile" element={
+                      <PartnerProtectedRoute message="Please login to edit your profile.">
+                        <PartnerProfile />
+                      </PartnerProtectedRoute>
+                    } />
+
+                    {/* Admin Portal Routes */}
+                    <Route path="/admin/login" element={
+                      <AdminPublicRoute message="You are already logged in to the admin panel.">
+                        <AdminLogin />
+                      </AdminPublicRoute>
+                    } />
+                    <Route path="/admin/dashboard" element={
+                      <AdminProtectedRoute message="Please login to access the admin panel.">
+                        <AdminDashboard />
+                      </AdminProtectedRoute>
+                    } />
+                    <Route path="/admin/users" element={
+                      <AdminProtectedRoute message="Please login to access user management.">
+                        <AdminUserManagement />
+                      </AdminProtectedRoute>
+                    } />
+                    <Route path="/admin/refunds" element={
+                      <AdminProtectedRoute message="Please login to access refund management.">
+                        <AdminRefunds />
+                      </AdminProtectedRoute>
+                    } />
+
+                    {/* Catch-all route - MUST be last */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                  <ChatBotWrapper />
+                </BrowserRouter>
               </TooltipProvider>
             </BookingProvider>
           </AdminAuthProvider>
