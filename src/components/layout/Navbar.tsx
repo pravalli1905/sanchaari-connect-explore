@@ -40,6 +40,9 @@ const Navbar = () => {
               </>
             ) : (
               <>
+                <Link to="/" className={`text-foreground hover:text-primary transition-colors ${location.pathname === '/' ? 'text-primary font-medium' : ''}`}>
+                  Home
+                </Link>
                 <Link to="/dashboard" className={`text-foreground hover:text-primary transition-colors ${location.pathname === '/dashboard' ? 'text-primary font-medium' : ''}`}>
                   Dashboard
                 </Link>
@@ -160,6 +163,9 @@ const Navbar = () => {
                 </>
               ) : (
                 <>
+                  <Link to="/" className="block text-foreground hover:text-primary transition-colors">
+                    Home
+                  </Link>
                   <Link to="/dashboard" className="block text-foreground hover:text-primary transition-colors">
                     Dashboard
                   </Link>

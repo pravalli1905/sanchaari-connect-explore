@@ -1,9 +1,9 @@
 import { useAuth } from "@/contexts/AuthContext"
-import { Navigate } from "react-router-dom"
 import Navbar from "@/components/layout/Navbar"
 import Hero from "@/components/home/Hero"
 import Features from "@/components/home/Features"
 import Testimonials from "@/components/home/Testimonials"
+import Home from "./Home"
 
 const Index = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -17,9 +17,9 @@ const Index = () => {
     );
   }
 
-  // Redirect logged-in users to dashboard
+  // Show logged-in homepage for authenticated users
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
+    return <Home />;
   }
 
   // Show marketing homepage for logged-out users
