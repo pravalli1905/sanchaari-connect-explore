@@ -141,7 +141,7 @@ All colors MUST be HSL.
   }
 
   .btn-secondary-transparent {
-    @apply bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-lg hover:bg-white hover:text-secondary transition-smooth;
+    @apply bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-lg hover:bg-white hover:text-secondary transition-all duration-300 ease-smooth;
   }
 
   .btn-pulse {
@@ -150,16 +150,16 @@ All colors MUST be HSL.
 
   /* Input Styles */
   .input-sanchaari {
-    @apply w-full px-4 py-3 border border-input-border rounded-lg bg-input focus:border-primary focus:ring-2 focus:ring-primary/20 transition-smooth;
+    @apply w-full px-4 py-3 border border-input-border rounded-lg bg-input focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-300 ease-smooth;
   }
 
   /* Card Styles */
   .card-elevated {
-    @apply bg-card rounded-lg shadow-card hover:shadow-floating transition-smooth;
+    @apply bg-card rounded-lg shadow-card hover:shadow-floating transition-all duration-300 ease-smooth;
   }
 
   .card-feature {
-    @apply card-elevated p-6 hover:scale-105 transition-bounce;
+    @apply card-elevated p-6 hover:scale-105 transition-all duration-300 ease-bounce;
   }
 
   /* Animation Utilities */
