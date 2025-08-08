@@ -31,6 +31,12 @@ All colors MUST be HSL.
     --secondary: 219 85% 32%;
     --secondary-foreground: 0 0% 100%;
 
+    /* Partner Portal Colors */
+    --partner-primary: 218 100% 31%;  /* Dark Blue #0B3D91 */
+    --partner-primary-foreground: 0 0% 100%;
+    --partner-accent: 17 100% 62%;    /* Orange accent #FF6F3C */
+    --partner-accent-foreground: 0 0% 100%;
+
     /* Muted Colors */
     --muted: 39 100% 97%;
     --muted-foreground: 0 0% 45%;

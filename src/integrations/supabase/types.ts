@@ -14,7 +14,332 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      partner_bookings: {
+        Row: {
+          booking_dates: Json
+          booking_reference: string
+          created_at: string
+          customer_details: Json | null
+          group_name: string
+          id: string
+          partner_id: string
+          service_id: string
+          status: string
+          total_amount: number | null
+          updated_at: string
+        }
+        Insert: {
+          booking_dates: Json
+          booking_reference: string
+          created_at?: string
+          customer_details?: Json | null
+          group_name: string
+          id?: string
+          partner_id: string
+          service_id: string
+          status?: string
+          total_amount?: number | null
+          updated_at?: string
+        }
+        Update: {
+          booking_dates?: Json
+          booking_reference?: string
+          created_at?: string
+          customer_details?: Json | null
+          group_name?: string
+          id?: string
+          partner_id?: string
+          service_id?: string
+          status?: string
+          total_amount?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_bookings_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "partner_bookings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_notifications: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          partner_id: string
+          title: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          partner_id: string
+          title: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          partner_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_notifications_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_profiles: {
+        Row: {
+          bank_account_number: string | null
+          bank_ifsc_code: string | null
+          bank_name: string | null
+          business_address: string | null
+          certificates: string[] | null
+          created_at: string
+          id: string
+          legal_documents: string[] | null
+          partner_id: string
+          tax_info: string | null
+          updated_at: string
+        }
+        Insert: {
+          bank_account_number?: string | null
+          bank_ifsc_code?: string | null
+          bank_name?: string | null
+          business_address?: string | null
+          certificates?: string[] | null
+          created_at?: string
+          id?: string
+          legal_documents?: string[] | null
+          partner_id: string
+          tax_info?: string | null
+          updated_at?: string
+        }
+        Update: {
+          bank_account_number?: string | null
+          bank_ifsc_code?: string | null
+          bank_name?: string | null
+          business_address?: string | null
+          certificates?: string[] | null
+          created_at?: string
+          id?: string
+          legal_documents?: string[] | null
+          partner_id?: string
+          tax_info?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_profiles_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partners: {
+        Row: {
+          company_name: string
+          contact_person: string
+          created_at: string
+          email: string
+          id: string
+          password_hash: string
+          phone: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          company_name: string
+          contact_person: string
+          created_at?: string
+          email: string
+          id?: string
+          password_hash: string
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string
+          contact_person?: string
+          created_at?: string
+          email?: string
+          id?: string
+          password_hash?: string
+          phone?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      refund_requests: {
+        Row: {
+          amount: number
+          booking_id: string
+          created_at: string
+          id: string
+          partner_comments: string | null
+          partner_id: string
+          reason: string | null
+          request_date: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          booking_id: string
+          created_at?: string
+          id?: string
+          partner_comments?: string | null
+          partner_id: string
+          reason?: string | null
+          request_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          booking_id?: string
+          created_at?: string
+          id?: string
+          partner_comments?: string | null
+          partner_id?: string
+          reason?: string | null
+          request_date?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refund_requests_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "partner_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refund_requests_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          availability: Json | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          partner_id: string
+          photos: string[] | null
+          pricing: Json | null
+          service_type: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          availability?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          partner_id: string
+          photos?: string[] | null
+          pricing?: Json | null
+          service_type: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          availability?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          partner_id?: string
+          photos?: string[] | null
+          pricing?: Json | null
+          service_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      support_tickets: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          partner_id: string
+          priority: string
+          status: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          partner_id: string
+          priority?: string
+          status?: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          partner_id?: string
+          priority?: string
+          status?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
