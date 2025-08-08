@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Search, Filter, Star, MapPin, Calendar, Users, ShoppingCart, CreditCard } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,11 +12,13 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import Navbar from '@/components/layout/Navbar';
+import { useBooking } from '@/contexts/BookingContext';
 import { toast } from 'sonner';
 
 const BookingStart = () => {
   const { groupId } = useParams();
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  const navigate = useNavigate();
+  const { setGroupId, addToCart, removeFromCart, cartItems, getTotalPrice } = useBooking();
   const [searchQuery, setSearchQuery] = useState('');
 
   const mockGroupData = {
@@ -94,19 +96,29 @@ const BookingStart = () => {
     }
   ];
 
-  const addToCart = (item: any, type: string) => {
+  useEffect(() => {
+    if (groupId) {
+      setGroupId(groupId);
+    }
+  }, [groupId, setGroupId]);
+
+  const addToCartHandler = (item: any, type: string) => {
     const cartItem = { ...item, type, quantity: 1 };
-    setCartItems(prev => [...prev, cartItem]);
+    addToCart(cartItem);
     toast.success(`${item.name || item.airline} added to booking cart`);
   };
 
-  const removeFromCart = (itemId: string) => {
-    setCartItems(prev => prev.filter(item => item.id !== itemId));
+  const removeFromCartHandler = (itemId: string) => {
+    removeFromCart(itemId);
     toast.success('Item removed from cart');
   };
 
-  const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + item.price, 0);
+  const proceedToPayment = () => {
+    if (cartItems.length === 0) {
+      toast.error('Please add items to your cart before proceeding');
+      return;
+    }
+    navigate(`/booking/${groupId}/payment`);
   };
 
   return (
@@ -219,7 +231,7 @@ const BookingStart = () => {
                               <p className="text-sm text-muted-foreground">per person</p>
                               <Button 
                                 className="mt-2"
-                                onClick={() => addToCart(flight, 'flight')}
+                                onClick={() => addToCartHandler(flight, 'flight')}
                               >
                                 Add to Cart
                               </Button>
@@ -292,7 +304,7 @@ const BookingStart = () => {
                                   <p className="text-sm text-muted-foreground">per night</p>
                                   <Button 
                                     className="mt-2"
-                                    onClick={() => addToCart(hotel, 'hotel')}
+                                    onClick={() => addToCartHandler(hotel, 'hotel')}
                                   >
                                     Add to Cart
                                   </Button>
@@ -359,7 +371,7 @@ const BookingStart = () => {
                               <p className="text-2xl font-bold">₹{activity.price.toLocaleString()}</p>
                               <Button 
                                 className="mt-2"
-                                onClick={() => addToCart(activity, 'activity')}
+                                onClick={() => addToCartHandler(activity, 'activity')}
                               >
                                 Add to Cart
                               </Button>
@@ -406,7 +418,7 @@ const BookingStart = () => {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => removeFromCart(item.id)}
+                                onClick={() => removeFromCartHandler(item.id)}
                                 className="text-xs h-6 px-2"
                               >
                                 Remove
@@ -432,7 +444,7 @@ const BookingStart = () => {
                       <Button 
                         className="w-full" 
                         disabled={cartItems.length === 0}
-                        onClick={() => toast.success('Proceeding to payment...')}
+                        onClick={proceedToPayment}
                       >
                         <CreditCard className="h-4 w-4 mr-2" />
                         Proceed to Payment

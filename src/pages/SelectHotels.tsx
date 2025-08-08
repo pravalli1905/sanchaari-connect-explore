@@ -1,15 +1,18 @@
-import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Star, MapPin, Wifi, Coffee } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Navbar from '@/components/layout/Navbar';
+import { useBooking } from '@/contexts/BookingContext';
 import { toast } from 'sonner';
 
 const SelectHotels = () => {
   const { groupId } = useParams();
-  const [selectedHotel, setSelectedHotel] = useState<any>(null);
+  const navigate = useNavigate();
+  const { setSelectedHotel, selectedHotel, addToCart } = useBooking();
+  const [loading, setLoading] = useState(false);
 
   const mockHotels = [
     {
@@ -33,8 +36,21 @@ const SelectHotels = () => {
   ];
 
   const selectHotel = (hotel: any) => {
-    setSelectedHotel(hotel);
-    toast.success(`${hotel.name} selected`);
+    setLoading(true);
+    setTimeout(() => {
+      setSelectedHotel(hotel);
+      addToCart(hotel);
+      setLoading(false);
+      toast.success(`${hotel.name} selected`);
+    }, 500);
+  };
+
+  const continueToActivities = () => {
+    if (!selectedHotel) {
+      toast.error('Please select a hotel before continuing');
+      return;
+    }
+    navigate(`/booking/${groupId}/activities`);
   };
 
   return (
@@ -96,8 +112,8 @@ const SelectHotels = () => {
                         <p className="text-2xl font-bold">₹{hotel.price.toLocaleString()}</p>
                         <p className="text-sm text-muted-foreground">per night</p>
                       </div>
-                      <Button onClick={() => selectHotel(hotel)}>
-                        Select Hotel
+                      <Button onClick={() => selectHotel(hotel)} disabled={loading}>
+                        {loading ? 'Selecting...' : 'Select Hotel'}
                       </Button>
                     </div>
                   </div>
@@ -109,10 +125,8 @@ const SelectHotels = () => {
           {selectedHotel && (
             <div className="fixed bottom-4 right-4 bg-primary text-primary-foreground p-4 rounded-lg shadow-lg">
               <p className="font-medium">{selectedHotel.name} selected</p>
-              <Button variant="secondary" className="mt-2" asChild>
-                <Link to={`/booking/${groupId}/activities`}>
-                  Continue to Activities →
-                </Link>
+              <Button variant="secondary" className="mt-2" onClick={continueToActivities}>
+                Continue to Activities →
               </Button>
             </div>
           )}

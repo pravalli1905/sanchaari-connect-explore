@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Bell, CheckCircle, Clock, X, CreditCard, Users, MessageCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 const Notifications = () => {
   const [filter, setFilter] = useState('all');
+  const [notifications, setNotifications] = useState([
 
-  const notifications = [
     {
       id: '1',
       type: 'payment',
@@ -56,7 +57,28 @@ const Notifications = () => {
       read: true,
       urgent: false
     }
-  ];
+  ]);
+
+  const markAsRead = useCallback((notificationId: string) => {
+    setNotifications(prev => prev.map(notif => 
+      notif.id === notificationId ? { ...notif, read: true } : notif
+    ));
+    toast.success('Notification marked as read');
+  }, []);
+
+  const deleteNotification = useCallback((notificationId: string) => {
+    setNotifications(prev => prev.filter(notif => notif.id !== notificationId));
+    toast.success('Notification deleted');
+  }, []);
+
+  const markAllAsRead = useCallback(() => {
+    setNotifications(prev => prev.map(notif => ({ ...notif, read: true })));
+    toast.success('All notifications marked as read');
+  }, []);
+
+  const openNotificationSettings = useCallback(() => {
+    toast.info('Notification settings opened');
+  }, []);
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -140,14 +162,14 @@ const Notifications = () => {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        {!notification.read && (
-                          <Button variant="outline" size="sm">
-                            <CheckCircle className="h-4 w-4" />
-                          </Button>
-                        )}
-                        <Button variant="outline" size="sm">
-                          <X className="h-4 w-4" />
-                        </Button>
+                            {!notification.read && (
+                              <Button variant="outline" size="sm" onClick={() => markAsRead(notification.id)}>
+                                <CheckCircle className="h-4 w-4" />
+                              </Button>
+                            )}
+                            <Button variant="outline" size="sm" onClick={() => deleteNotification(notification.id)}>
+                              <X className="h-4 w-4" />
+                            </Button>
                       </div>
                     </div>
                   </CardContent>
@@ -184,14 +206,14 @@ const Notifications = () => {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          {!notification.read && (
-                            <Button variant="outline" size="sm">
-                              <CheckCircle className="h-4 w-4" />
-                            </Button>
-                          )}
-                          <Button variant="outline" size="sm">
-                            <X className="h-4 w-4" />
+                        {!notification.read && (
+                          <Button variant="outline" size="sm" onClick={() => markAsRead(notification.id)}>
+                            <CheckCircle className="h-4 w-4" />
                           </Button>
+                        )}
+                        <Button variant="outline" size="sm" onClick={() => deleteNotification(notification.id)}>
+                          <X className="h-4 w-4" />
+                        </Button>
                         </div>
                       </div>
                     </CardContent>
@@ -214,10 +236,10 @@ const Notifications = () => {
           )}
 
           <div className="flex gap-4 justify-center mt-8">
-            <Button variant="outline">
+            <Button variant="outline" onClick={markAllAsRead}>
               Mark All as Read
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={openNotificationSettings}>
               Notification Settings
             </Button>
           </div>

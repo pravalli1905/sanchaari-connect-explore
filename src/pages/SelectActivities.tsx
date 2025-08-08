@@ -1,14 +1,17 @@
-import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Clock, Star, ShoppingCart } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/layout/Navbar';
+import { useBooking } from '@/contexts/BookingContext';
 import { toast } from 'sonner';
 
 const SelectActivities = () => {
   const { groupId } = useParams();
-  const [selectedActivities, setSelectedActivities] = useState<any[]>([]);
+  const navigate = useNavigate();
+  const { selectedActivities, addSelectedActivity } = useBooking();
+  const [loading, setLoading] = useState('');
 
   const mockActivities = [
     {
@@ -32,8 +35,16 @@ const SelectActivities = () => {
   ];
 
   const addActivity = (activity: any) => {
-    setSelectedActivities(prev => [...prev, activity]);
-    toast.success(`${activity.name} added to booking`);
+    setLoading(activity.id);
+    setTimeout(() => {
+      addSelectedActivity(activity);
+      setLoading('');
+      toast.success(`${activity.name} added to booking`);
+    }, 500);
+  };
+
+  const continueToReview = () => {
+    navigate(`/booking/${groupId}/review`);
   };
 
   return (
@@ -83,8 +94,8 @@ const SelectActivities = () => {
                         <p className="text-2xl font-bold">₹{activity.price.toLocaleString()}</p>
                         <p className="text-sm text-muted-foreground">per person</p>
                       </div>
-                      <Button onClick={() => addActivity(activity)}>
-                        Add to Booking
+                      <Button onClick={() => addActivity(activity)} disabled={loading === activity.id}>
+                        {loading === activity.id ? 'Adding...' : 'Add to Booking'}
                       </Button>
                     </div>
                   </div>
@@ -96,10 +107,8 @@ const SelectActivities = () => {
           {selectedActivities.length > 0 && (
             <div className="fixed bottom-4 right-4 bg-primary text-primary-foreground p-4 rounded-lg shadow-lg">
               <p className="font-medium">{selectedActivities.length} activities selected</p>
-              <Button variant="secondary" className="mt-2" asChild>
-                <Link to={`/booking/${groupId}/review`}>
-                  Review Booking →
-                </Link>
+              <Button variant="secondary" className="mt-2" onClick={continueToReview}>
+                Review Booking →
               </Button>
             </div>
           )}
