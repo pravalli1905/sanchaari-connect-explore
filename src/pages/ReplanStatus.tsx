@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, Clock, X, RefreshCw } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 
 const ReplanStatus = () => {
   const { groupId } = useParams();
+  const navigate = useNavigate();
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(180); // 3 minutes in seconds
@@ -90,8 +91,8 @@ const ReplanStatus = () => {
 
   const handleAcceptChanges = () => {
     toast.success('Updated itinerary accepted!');
-    // Redirect to updated itinerary
-    window.location.href = `/groups/${groupId}/itinerary`;
+    // SPA navigation (no full reload)
+    navigate(`/groups/${groupId}/itinerary`);
   };
 
   const formatTime = (seconds: number) => {

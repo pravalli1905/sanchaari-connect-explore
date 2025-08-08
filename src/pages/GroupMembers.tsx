@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, UserMinus, RefreshCw, Send, AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 
 const GroupMembers = () => {
   const { groupId } = useParams();
+  const navigate = useNavigate();
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [dropoutReason, setDropoutReason] = useState('');
   const [showReplanDialog, setShowReplanDialog] = useState(false);
@@ -110,8 +111,8 @@ const GroupMembers = () => {
   const handleReplan = () => {
     setShowReplanDialog(false);
     toast.success('Trip replanning initiated');
-    // Redirect to replan status page
-    window.location.href = `/groups/${groupId}/replan-status`;
+    // SPA navigation (no full reload)
+    navigate(`/groups/${groupId}/replan-status`);
   };
 
   const activeMembers = members.filter(m => m.status === 'active').length;
@@ -279,38 +280,6 @@ const GroupMembers = () => {
                     </div>
                   </div>
                 ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Activity Log */}
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Timeline of member join/leave actions</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                  <span className="text-muted-foreground">Jan 20, 2024</span>
-                  <span>Sneha Reddy left the group (Budget constraints)</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                  <span className="text-muted-foreground">Jan 19, 2024</span>
-                  <span>Arjun Kumar marked as inactive</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-muted-foreground">Jan 18, 2024</span>
-                  <span>Sneha Reddy joined the group</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-muted-foreground">Jan 17, 2024</span>
-                  <span>Arjun Kumar joined the group</span>
-                </div>
               </div>
             </CardContent>
           </Card>
