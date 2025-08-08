@@ -1,7 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import ChatBot from './ChatBot';
-import ChatBotConfig from './ChatBotConfig';
 
 const ChatBotWrapper = () => {
   const location = useLocation();
@@ -32,13 +31,10 @@ const ChatBotWrapper = () => {
   };
 
   return (
-    <>
-      <ChatBot 
-        userType={getUserType()} 
-        context={getContext()}
-      />
-      <ChatBotConfig />
-    </>
+    <ChatBot 
+      userType={getUserType()} 
+      context={getContext()}
+    />
   );
 };
 
