@@ -21,6 +21,11 @@ import AcceptRejectInvites from "./pages/AcceptRejectInvites";
 import GroupChat from "./pages/GroupChat";
 import ItineraryBuilder from "./pages/ItineraryBuilder";
 import ItineraryView from "./pages/ItineraryView";
+import GroupPreferences from "./pages/GroupPreferences";
+import GroupBudget from "./pages/GroupBudget";
+import GroupMembers from "./pages/GroupMembers";
+import ReplanStatus from "./pages/ReplanStatus";
+import BookingStart from "./pages/BookingStart";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -98,6 +103,31 @@ const App = () => (
             <Route path="/groups/:groupId/itinerary" element={
               <ProtectedRoute message="Login to view the full itinerary.">
                 <ItineraryView />
+              </ProtectedRoute>
+            } />
+            <Route path="/groups/:groupId/preferences" element={
+              <ProtectedRoute message="Please log in to set or update your trip preferences.">
+                <GroupPreferences />
+              </ProtectedRoute>
+            } />
+            <Route path="/groups/:groupId/budget" element={
+              <ProtectedRoute message="Login to view and manage group budget.">
+                <GroupBudget />
+              </ProtectedRoute>
+            } />
+            <Route path="/groups/:groupId/members" element={
+              <ProtectedRoute message="Please log in to view and manage group members.">
+                <GroupMembers />
+              </ProtectedRoute>
+            } />
+            <Route path="/groups/:groupId/replan-status" element={
+              <ProtectedRoute message="Login to view trip re-optimization status.">
+                <ReplanStatus />
+              </ProtectedRoute>
+            } />
+            <Route path="/booking/:groupId/start" element={
+              <ProtectedRoute message="Please login to start booking your trip.">
+                <BookingStart />
               </ProtectedRoute>
             } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
