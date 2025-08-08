@@ -11,6 +11,10 @@ import PartnerPublicRoute from "./components/auth/PartnerPublicRoute";
 import PartnerLogin from "./pages/partner/PartnerLogin";
 import PartnerSignup from "./pages/partner/PartnerSignup";
 import PartnerDashboard from "./pages/partner/PartnerDashboard";
+import PartnerServices from "./pages/partner/PartnerServices";
+import PartnerBookings from "./pages/partner/PartnerBookings";
+import PartnerRefunds from "./pages/partner/PartnerRefunds";
+import PartnerProfile from "./pages/partner/PartnerProfile";
 import ChatBotWrapper from "./components/chatbot/ChatBotWrapper";
 import ErrorBoundary from "./components/ui/error-boundary";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -231,6 +235,26 @@ const App = () => (
             <Route path="/partner/dashboard" element={
               <PartnerProtectedRoute message="Please login to access your partner dashboard.">
                 <PartnerDashboard />
+              </PartnerProtectedRoute>
+            } />
+            <Route path="/partner/services" element={
+              <PartnerProtectedRoute message="Please login to manage your services.">
+                <PartnerServices />
+              </PartnerProtectedRoute>
+            } />
+            <Route path="/partner/bookings" element={
+              <PartnerProtectedRoute message="Please login to view bookings.">
+                <PartnerBookings />
+              </PartnerProtectedRoute>
+            } />
+            <Route path="/partner/refunds" element={
+              <PartnerProtectedRoute message="Please login to manage refunds.">
+                <PartnerRefunds />
+              </PartnerProtectedRoute>
+            } />
+            <Route path="/partner/profile" element={
+              <PartnerProtectedRoute message="Please login to edit your profile.">
+                <PartnerProfile />
               </PartnerProtectedRoute>
             } />
             
