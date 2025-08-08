@@ -26,6 +26,9 @@ import GroupBudget from "./pages/GroupBudget";
 import GroupMembers from "./pages/GroupMembers";
 import ReplanStatus from "./pages/ReplanStatus";
 import BookingStart from "./pages/BookingStart";
+import SelectFlights from "./pages/SelectFlights";
+import SelectHotels from "./pages/SelectHotels";
+import SelectActivities from "./pages/SelectActivities";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
