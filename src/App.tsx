@@ -8,6 +8,11 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import ChangePassword from "./pages/ChangePassword";
+import LanguageSelection from "./pages/LanguageSelection";
+import CreateGroup from "./pages/CreateGroup";
+import GroupOverview from "./pages/GroupOverview";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +29,11 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/change-password" element={<ChangePassword />} />
+          <Route path="/language" element={<LanguageSelection />} />
+          <Route path="/groups/new" element={<CreateGroup />} />
+          <Route path="/groups/:groupId" element={<GroupOverview />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

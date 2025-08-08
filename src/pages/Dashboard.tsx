@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { Bell, Plus, Users, Calendar, Mail, CheckCircle, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -185,14 +186,16 @@ const Dashboard = () => {
         </div>
 
         {/* Floating Action Button */}
-        <div className="fixed bottom-6 right-6 z-50">
-          <Button
-            size="lg"
-            className="rounded-full w-16 h-16 bg-gradient-to-r from-primary to-primary-hover shadow-floating hover:scale-110 transition-transform"
-          >
-            <Plus size={24} />
-          </Button>
-        </div>
+        <Link to="/groups/new">
+          <div className="fixed bottom-6 right-6 z-50">
+            <Button
+              size="lg"
+              className="rounded-full w-16 h-16 bg-gradient-to-r from-primary to-primary-hover shadow-floating hover:scale-110 transition-transform"
+            >
+              <Plus size={24} />
+            </Button>
+          </div>
+        </Link>
       </div>
     </div>
   )
