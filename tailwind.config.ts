@@ -67,6 +67,11 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
+			boxShadow: {
+				'soft': '0 4px 16px -4px hsl(var(--primary) / 0.1)',
+				'card': '0 8px 32px -8px hsl(0 0% 0% / 0.08)',
+				'floating': '0 20px 40px -12px hsl(var(--primary) / 0.2)',
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
