@@ -1,26 +1,43 @@
-import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { useBooking } from '@/contexts/BookingContext';
+import { toast } from 'sonner';
 
 const BookingReview = () => {
   const { groupId } = useParams();
+  const navigate = useNavigate();
+  const { selectedFlight, selectedHotel, selectedActivities, getTotalPrice } = useBooking();
 
-  // Mock selections summary (in a real app, pull from state/store)
-  const summary = {
-    flight: { airline: 'IndiGo', route: 'DEL → COK', price: 8500 },
-    hotel: { name: 'Backwater Resort Kumarakom', nights: 4, price: 26000 },
-    activities: [
-      { name: 'Houseboat Cruise', price: 3500 },
-      { name: 'Spice Plantation Tour', price: 1200 },
-    ],
-  };
+  // Check if all required selections are made
+  const hasValidBooking = selectedFlight && selectedHotel;
+  
+  if (!hasValidBooking) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-background">
+          <div className="max-w-5xl mx-auto px-4 py-8">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold mb-4">No Booking to Review</h1>
+              <p className="text-muted-foreground mb-6">Please make your selections first.</p>
+              <Button asChild>
+                <Link to={`/booking/${groupId}/start`}>Start Booking</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
 
-  const total = summary.flight.price + summary.hotel.price + summary.activities.reduce((t, a) => t + a.price, 0);
+  const subtotal = getTotalPrice();
+  const taxes = Math.round(subtotal * 0.12);
+  const total = subtotal + taxes;
 
   return (
     <>
@@ -41,11 +58,11 @@ const BookingReview = () => {
                 </CardHeader>
                 <CardContent className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">{summary.flight.airline}</p>
-                    <p className="text-sm text-muted-foreground">{summary.flight.route}</p>
+                    <p className="font-medium">{selectedFlight?.airline || selectedFlight?.name}</p>
+                    <p className="text-sm text-muted-foreground">{selectedFlight?.route}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">₹{summary.flight.price.toLocaleString()}</p>
+                    <p className="font-semibold">₹{selectedFlight?.price.toLocaleString()}</p>
                     <Button variant="outline" size="sm" asChild>
                       <Link to={`/booking/${groupId}/flights`}>Edit</Link>
                     </Button>
@@ -60,11 +77,11 @@ const BookingReview = () => {
                 </CardHeader>
                 <CardContent className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">{summary.hotel.name}</p>
-                    <p className="text-sm text-muted-foreground">{summary.hotel.nights} nights</p>
+                    <p className="font-medium">{selectedHotel?.name}</p>
+                    <p className="text-sm text-muted-foreground">Selected accommodation</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">₹{summary.hotel.price.toLocaleString()}</p>
+                    <p className="font-semibold">₹{selectedHotel?.price.toLocaleString()}</p>
                     <Button variant="outline" size="sm" asChild>
                       <Link to={`/booking/${groupId}/hotels`}>Edit</Link>
                     </Button>
@@ -78,14 +95,18 @@ const BookingReview = () => {
                   <CardDescription>Review selected experiences</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    {summary.activities.map((a, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <p>{a.name}</p>
-                        <p className="font-medium">₹{a.price.toLocaleString()}</p>
-                      </div>
-                    ))}
-                  </div>
+                  {selectedActivities.length > 0 ? (
+                    <div className="space-y-3">
+                      {selectedActivities.map((activity, i) => (
+                        <div key={i} className="flex items-center justify-between">
+                          <p>{activity.name}</p>
+                          <p className="font-medium">₹{activity.price.toLocaleString()}</p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground">No activities selected</p>
+                  )}
                   <div className="mt-4 text-right">
                     <Button variant="outline" size="sm" asChild>
                       <Link to={`/booking/${groupId}/activities`}>Edit</Link>
@@ -104,16 +125,16 @@ const BookingReview = () => {
                 <CardContent className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span>Subtotal</span>
-                    <span>₹{total.toLocaleString()}</span>
+                    <span>₹{subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Taxes & Fees</span>
-                    <span>₹{Math.round(total * 0.12).toLocaleString()}</span>
+                    <span>₹{taxes.toLocaleString()}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between font-semibold">
                     <span>Total</span>
-                    <span>₹{Math.round(total * 1.12).toLocaleString()}</span>
+                    <span>₹{total.toLocaleString()}</span>
                   </div>
                 </CardContent>
               </Card>
