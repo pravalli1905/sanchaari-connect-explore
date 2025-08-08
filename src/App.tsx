@@ -6,8 +6,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { BookingProvider } from "./contexts/BookingContext";
 import { PartnerAuthProvider } from "./contexts/PartnerAuthContext";
+import { AdminAuthProvider } from "./contexts/AdminAuthContext";
 import PartnerProtectedRoute from "./components/auth/PartnerProtectedRoute";
 import PartnerPublicRoute from "./components/auth/PartnerPublicRoute";
+import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
+import AdminPublicRoute from "./components/auth/AdminPublicRoute";
 import PartnerLogin from "./pages/partner/PartnerLogin";
 import PartnerSignup from "./pages/partner/PartnerSignup";
 import PartnerDashboard from "./pages/partner/PartnerDashboard";
@@ -15,6 +18,8 @@ import PartnerServices from "./pages/partner/PartnerServices";
 import PartnerBookings from "./pages/partner/PartnerBookings";
 import PartnerRefunds from "./pages/partner/PartnerRefunds";
 import PartnerProfile from "./pages/partner/PartnerProfile";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import ChatBotWrapper from "./components/chatbot/ChatBotWrapper";
 import ErrorBoundary from "./components/ui/error-boundary";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -63,8 +68,9 @@ const App = () => (
     <ErrorBoundary>
       <AuthProvider>
         <PartnerAuthProvider>
-          <BookingProvider>
-            <TooltipProvider>
+          <AdminAuthProvider>
+            <BookingProvider>
+              <TooltipProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -258,13 +264,26 @@ const App = () => (
               </PartnerProtectedRoute>
             } />
             
+            {/* Admin Portal Routes */}
+            <Route path="/admin/login" element={
+              <AdminPublicRoute message="You are already logged in to the admin panel.">
+                <AdminLogin />
+              </AdminPublicRoute>
+            } />
+            <Route path="/admin/dashboard" element={
+              <AdminProtectedRoute message="Please login to access the admin panel.">
+                <AdminDashboard />
+              </AdminProtectedRoute>
+            } />
+            
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
             </Routes>
             <ChatBotWrapper />
           </BrowserRouter>
-            </TooltipProvider>
-          </BookingProvider>
+              </TooltipProvider>
+            </BookingProvider>
+          </AdminAuthProvider>
         </PartnerAuthProvider>
       </AuthProvider>
     </ErrorBoundary>
