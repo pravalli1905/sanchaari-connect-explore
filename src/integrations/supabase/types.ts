@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_profiles: {
+        Row: {
+          created_at: string
+          department: string | null
+          email: string
+          id: string
+          is_active: boolean
+          password_hash: string
+          permissions: string[]
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          email: string
+          id?: string
+          is_active?: boolean
+          password_hash: string
+          permissions?: string[]
+          role?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          email?: string
+          id?: string
+          is_active?: boolean
+          password_hash?: string
+          permissions?: string[]
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       group_members: {
         Row: {
           created_at: string
@@ -562,7 +601,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      authenticate_admin: {
+        Args: { email_input: string; password_input: string }
+        Returns: {
+          admin_data: Json
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
