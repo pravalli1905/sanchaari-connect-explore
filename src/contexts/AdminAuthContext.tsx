@@ -5,6 +5,7 @@ import { Session, User } from '@supabase/supabase-js';
 interface AdminProfile {
   id: string;
   user_id: string;
+  email: string;
   role: string;
   permissions: string[];
   department: string;
@@ -39,73 +40,91 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [adminProfile, setAdminProfile] = useState<AdminProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchAdminProfile = async (userId: string) => {
+  const fetchAdminProfile = async (email: string) => {
     try {
-      // Mock admin profile for now
-      const mockProfile: AdminProfile = {
-        id: '1',
-        user_id: userId,
-        role: 'super_admin',
-        permissions: ['users.read', 'users.write', 'groups.read', 'groups.write', 'bookings.read', 'bookings.write'],
-        department: 'Operations',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      setAdminProfile(mockProfile);
+      const { data, error } = await supabase
+        .from('admin_profiles')
+        .select('*')
+        .eq('email', email)
+        .eq('is_active', true)
+        .single();
+
+      if (error) {
+        console.error('Error fetching admin profile:', error);
+        return;
+      }
+
+      if (data) {
+        setAdminProfile(data);
+      }
     } catch (error) {
       console.error('Error fetching admin profile:', error);
     }
   };
 
   useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user && session.user.user_metadata?.user_type === 'admin') {
-          await fetchAdminProfile(session.user.id);
-        } else {
-          setAdminProfile(null);
-        }
-        
-        setIsLoading(false);
+    // Check for existing admin session in localStorage
+    const adminSession = localStorage.getItem('admin_session');
+    if (adminSession) {
+      try {
+        const { session: storedSession, profile } = JSON.parse(adminSession);
+        setSession(storedSession);
+        setUser(storedSession.user);
+        setAdminProfile(profile);
+      } catch (error) {
+        localStorage.removeItem('admin_session');
       }
-    );
-
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user && session.user.user_metadata?.user_type === 'admin') {
-        fetchAdminProfile(session.user.id);
-      }
-      
-      setIsLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    }
+    setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-    
-    // Check if user is admin
-    if (data.user && data.user.user_metadata?.user_type !== 'admin') {
-      await supabase.auth.signOut();
-      return { error: { message: 'Access denied. Admin credentials required.' } };
+    try {
+      const { data, error } = await supabase.rpc('authenticate_admin', {
+        email_input: email,
+        password_input: password
+      });
+
+      if (error || !data || data.length === 0 || !data[0]) {
+        return { error: { message: 'Invalid email or password' } };
+      }
+
+      const adminData = data[0] as unknown as AdminProfile;
+      setAdminProfile(adminData);
+      
+      // Create a mock session for admin
+      const mockSession = {
+        access_token: 'admin_token',
+        refresh_token: 'admin_refresh',
+        expires_in: 3600,
+        expires_at: Date.now() + 3600000,
+        token_type: 'bearer',
+        user: {
+          id: adminData.user_id,
+          email: adminData.email,
+          user_metadata: { user_type: 'admin' }
+        }
+      };
+      
+      setSession(mockSession as any);
+      setUser(mockSession.user as any);
+      
+      // Store session in localStorage
+      localStorage.setItem('admin_session', JSON.stringify({
+        session: mockSession,
+        profile: adminData
+      }));
+      
+      return { error: null };
+    } catch (error) {
+      return { error: { message: 'Authentication failed' } };
     }
-    
-    return { error };
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
+    localStorage.removeItem('admin_session');
+    setSession(null);
+    setUser(null);
     setAdminProfile(null);
   };
 
