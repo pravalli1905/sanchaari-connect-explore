@@ -11,8 +11,8 @@ import ChatBotWrapper from "./components/chatbot/ChatBotWrapper";
 import ErrorBoundary from "./components/ui/error-boundary";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import PublicRoute from "./components/auth/PublicRoute";
-import PartnerProtectedRoute from "./components/auth/PartnerProtectedRoute";
-import PartnerPublicRoute from "./components/auth/PartnerPublicRoute";
+import PartnerProtectedRoute from "./components/partner/PartnerProtectedRoute";
+import PartnerPublicRoute from "./components/partner/PartnerPublicRoute";
 import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
 import AdminPublicRoute from "./components/auth/AdminPublicRoute";
 
@@ -54,7 +54,7 @@ import Feedback from "./pages/Feedback";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import NotFound from "./pages/NotFound";
 
-// ===== PARTNER PAGES (9) =====
+// ===== PARTNER PAGES (10) =====
 import PartnerLogin from "./pages/partner/PartnerLogin";
 import PartnerSignup from "./pages/partner/PartnerSignup";
 import PartnerDashboard from "./pages/partner/PartnerDashboard";
@@ -63,6 +63,7 @@ import PartnerBookings from "./pages/partner/PartnerBookings";
 import PartnerRefunds from "./pages/partner/PartnerRefunds";
 import PartnerProfile from "./pages/partner/PartnerProfile";
 import PartnerAnalytics from "./pages/partner/PartnerAnalytics";
+import PartnerNotifications from "./pages/partner/PartnerNotifications";
 import PartnerSupport from "./pages/partner/PartnerSupport";
 
 // ===== ADMIN PAGES (15) =====
@@ -259,7 +260,7 @@ const App = () => (
                       </ProtectedRoute>
                     } />
 
-                    {/* ===== PARTNER PORTAL ROUTES (9) ===== */}
+                    {/* ===== PARTNER PORTAL ROUTES (10) ===== */}
                     <Route path="/partner/login" element={
                       <PartnerPublicRoute message="You are already logged in to the partner portal.">
                         <PartnerLogin />
@@ -293,6 +294,11 @@ const App = () => (
                     <Route path="/partner/analytics" element={
                       <PartnerProtectedRoute message="Please login to view analytics.">
                         <PartnerAnalytics />
+                      </PartnerProtectedRoute>
+                    } />
+                    <Route path="/partner/notifications" element={
+                      <PartnerProtectedRoute message="Please login to view notifications.">
+                        <PartnerNotifications />
                       </PartnerProtectedRoute>
                     } />
                     <Route path="/partner/support" element={
