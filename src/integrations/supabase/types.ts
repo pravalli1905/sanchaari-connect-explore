@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      activities: {
+        Row: {
+          capacity: number | null
+          created_at: string | null
+          description: string | null
+          duration: string
+          id: string
+          image_url: string | null
+          location: string
+          name: string
+          price: number
+          rating: number | null
+        }
+        Insert: {
+          capacity?: number | null
+          created_at?: string | null
+          description?: string | null
+          duration: string
+          id?: string
+          image_url?: string | null
+          location: string
+          name: string
+          price: number
+          rating?: number | null
+        }
+        Update: {
+          capacity?: number | null
+          created_at?: string | null
+          description?: string | null
+          duration?: string
+          id?: string
+          image_url?: string | null
+          location?: string
+          name?: string
+          price?: number
+          rating?: number | null
+        }
+        Relationships: []
+      }
       admin_profiles: {
         Row: {
           created_at: string
@@ -50,6 +89,51 @@ export type Database = {
           role?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      flights: {
+        Row: {
+          airline: string
+          arrival_time: string
+          available_seats: number | null
+          created_at: string | null
+          departure_time: string
+          destination: string
+          duration: string
+          flight_number: string
+          id: string
+          origin: string
+          price: number
+          stops: number | null
+        }
+        Insert: {
+          airline: string
+          arrival_time: string
+          available_seats?: number | null
+          created_at?: string | null
+          departure_time: string
+          destination: string
+          duration: string
+          flight_number: string
+          id?: string
+          origin: string
+          price: number
+          stops?: number | null
+        }
+        Update: {
+          airline?: string
+          arrival_time?: string
+          available_seats?: number | null
+          created_at?: string | null
+          departure_time?: string
+          destination?: string
+          duration?: string
+          flight_number?: string
+          id?: string
+          origin?: string
+          price?: number
+          stops?: number | null
         }
         Relationships: []
       }
@@ -136,6 +220,42 @@ export type Database = {
           start_date?: string | null
           status?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      hotels: {
+        Row: {
+          amenities: string[] | null
+          available_rooms: number | null
+          created_at: string | null
+          id: string
+          image_url: string | null
+          location: string
+          name: string
+          price_per_night: number
+          rating: number | null
+        }
+        Insert: {
+          amenities?: string[] | null
+          available_rooms?: number | null
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          location: string
+          name: string
+          price_per_night: number
+          rating?: number | null
+        }
+        Update: {
+          amenities?: string[] | null
+          available_rooms?: number | null
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          location?: string
+          name?: string
+          price_per_night?: number
+          rating?: number | null
         }
         Relationships: []
       }

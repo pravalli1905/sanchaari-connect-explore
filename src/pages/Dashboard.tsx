@@ -1,33 +1,75 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { Bell, Plus, Users, Calendar, Mail, CheckCircle, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Navbar from "@/components/layout/Navbar"
+import { supabase } from "@/integrations/supabase/client"
+import { useAuth } from "@/contexts/AuthContext"
 
 const Dashboard = () => {
-  const [notifications] = useState([
-    { id: 1, text: "Rahul added new photos to Goa Trip", time: "2 hours ago", unread: true },
-    { id: 2, text: "Budget updated for Manali Adventure", time: "5 hours ago", unread: true },
-    { id: 3, text: "New message in Kerala Backwaters group", time: "1 day ago", unread: false }
-  ])
+  const { user } = useAuth()
+  const [notifications, setNotifications] = useState<any[]>([])
+  const [activeGroups, setActiveGroups] = useState<any[]>([])
+  const [groupInvites, setGroupInvites] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const [invites] = useState([
-    { id: 1, groupName: "Rajasthan Royal Tour", invitedBy: "Priya Sharma", members: 6 },
-    { id: 2, groupName: "Mumbai Food Walk", invitedBy: "Arjun Patel", members: 4 }
-  ])
+  useEffect(() => {
+    if (user) {
+      fetchDashboardData()
+    }
+  }, [user])
 
-  const [activeGroups] = useState([
-    { id: 1, name: "Goa Beach Vibes", members: 8, image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=200&h=150&fit=crop" },
-    { id: 2, name: "Manali Adventure", members: 6, image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=150&fit=crop" },
-    { id: 3, name: "Kerala Backwaters", members: 5, image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=200&h=150&fit=crop" }
-  ])
+  const fetchDashboardData = async () => {
+    try {
+      // Fetch user's groups
+      const { data: userGroups, error: groupsError } = await supabase
+        .from('groups')
+        .select(`
+          *,
+          group_members!inner(
+            role,
+            status,
+            user_id
+          )
+        `)
+        .eq('group_members.user_id', user?.id)
+        .eq('group_members.status', 'accepted')
 
-  const [upcomingTrips] = useState([
-    { id: 1, destination: "Goa", date: "Dec 15-20, 2024", image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=200&h=150&fit=crop" },
-    { id: 2, destination: "Manali", date: "Jan 5-10, 2025", image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=150&fit=crop" }
-  ])
+      if (groupsError) throw groupsError
+
+      // Fetch user notifications
+      const { data: userNotifications, error: notificationsError } = await supabase
+        .from('user_notifications')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false })
+        .limit(5)
+
+      if (notificationsError) throw notificationsError
+
+      // Fetch pending group invites
+      const { data: pendingInvites, error: invitesError } = await supabase
+        .from('group_members')
+        .select(`
+          *,
+          groups(name)
+        `)
+        .eq('user_id', user?.id)
+        .eq('status', 'pending')
+
+      if (invitesError) throw invitesError
+
+      setActiveGroups(userGroups || [])
+      setNotifications(userNotifications || [])
+      setGroupInvites(pendingInvites || [])
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -96,31 +138,34 @@ const Dashboard = () => {
               <CardTitle className="flex items-center space-x-2">
                 <Mail className="text-primary" size={24} />
                 <span>Pending Invites</span>
-                {invites.length > 0 && (
-                  <Badge variant="secondary">{invites.length}</Badge>
+                {groupInvites.length > 0 && (
+                  <Badge variant="secondary">{groupInvites.length}</Badge>
                 )}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {invites.map((invite) => (
-                <div key={invite.id} className="p-4 border border-border rounded-lg">
-                  <h3 className="font-semibold text-card-foreground mb-2">{invite.groupName}</h3>
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Invited by {invite.invitedBy} • {invite.members} members
-                  </p>
-                  <div className="flex space-x-2">
-                    <Button size="sm" className="bg-gradient-to-r from-primary to-primary-hover">
-                      <CheckCircle size={16} className="mr-1" />
-                      Accept
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <X size={16} className="mr-1" />
-                      Decline
-                    </Button>
+              {loading ? (
+                <p className="text-muted-foreground text-center py-4">Loading...</p>
+              ) : groupInvites.length > 0 ? (
+                groupInvites.map((invite) => (
+                  <div key={invite.id} className="p-4 border border-border rounded-lg">
+                    <h3 className="font-semibold text-card-foreground mb-2">{invite.groups?.name}</h3>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Pending invitation
+                    </p>
+                    <div className="flex space-x-2">
+                      <Button size="sm" className="bg-gradient-to-r from-primary to-primary-hover">
+                        <CheckCircle size={16} className="mr-1" />
+                        Accept
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        <X size={16} className="mr-1" />
+                        Decline
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ))}
-              {invites.length === 0 && (
+                ))
+              ) : (
                 <p className="text-muted-foreground text-center py-4">
                   No pending invites
                 </p>
@@ -128,7 +173,7 @@ const Dashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Upcoming Trips */}
+          {/* Active Groups as Upcoming Trips */}
           <Card className="card-elevated">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
@@ -137,19 +182,26 @@ const Dashboard = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {upcomingTrips.map((trip) => (
-                <div key={trip.id} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted transition-colors">
-                  <img
-                    src={trip.image}
-                    alt={trip.destination}
-                    className="w-16 h-12 rounded-lg object-cover"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-card-foreground">{trip.destination}</h3>
-                    <p className="text-sm text-muted-foreground">{trip.date}</p>
+              {loading ? (
+                <p className="text-muted-foreground text-center py-4">Loading...</p>
+              ) : activeGroups.filter(group => group.status === 'planning' || group.status === 'booked').slice(0, 3).map((group) => (
+                <div key={group.id} className="flex items-center space-x-4 p-3 rounded-lg hover:bg-muted transition-colors">
+                  <div className="w-16 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Calendar className="text-primary" size={20} />
                   </div>
-                  <Button size="sm" variant="outline">
-                    View Details
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-card-foreground">{group.destination || group.name}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {group.start_date && group.end_date 
+                        ? `${new Date(group.start_date).toLocaleDateString()} - ${new Date(group.end_date).toLocaleDateString()}`
+                        : 'Planning stage'
+                      }
+                    </p>
+                  </div>
+                  <Button size="sm" variant="outline" asChild>
+                    <Link to={`/groups/${group.id}`}>
+                      View Details
+                    </Link>
                   </Button>
                 </div>
               ))}
