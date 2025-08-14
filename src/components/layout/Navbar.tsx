@@ -22,10 +22,11 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-primary to-primary-hover rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">S</span>
-            </div>
-            <span className="text-2xl font-bold text-secondary">Sanchaari</span>
+            <img 
+              src="/lovable-uploads/516a5d75-688a-4977-8145-75b378df61a9.png" 
+              alt="Sanchaari Logo" 
+              className="h-8 w-auto"
+            />
           </Link>
 
           {/* Center navigation - show marketing nav for logged-out users, app nav for logged-in */}
