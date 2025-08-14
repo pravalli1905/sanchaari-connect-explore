@@ -57,6 +57,7 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				success: 'hsl(var(--success))',
 				partner: {
 					primary: 'hsl(var(--partner-primary))',
 					'primary-foreground': 'hsl(var(--partner-primary-foreground))',

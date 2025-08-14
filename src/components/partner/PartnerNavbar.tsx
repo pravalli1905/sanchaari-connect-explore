@@ -30,9 +30,13 @@ const PartnerNavbar = () => {
     <nav className="bg-partner-primary border-b border-partner-primary/20 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <Building className="h-8 w-8 text-partner-accent" />
-            <h1 className="text-xl font-bold text-white">Sanchaari Partner Portal</h1>
+          <div className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/516a5d75-688a-4977-8145-75b378df61a9.png" 
+              alt="Sanchaari Logo" 
+              className="h-8 sm:h-10 w-auto"
+            />
+            <h1 className="text-lg sm:text-xl font-bold text-white">Partner Portal</h1>
           </div>
         </div>
 
