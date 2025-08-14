@@ -43,10 +43,14 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle }) => {
             <Menu className="h-5 w-5" />
           </Button>
           
-          <div className="flex items-center space-x-2">
-            <Shield className="h-8 w-8 text-orange-500" />
-            <div>
-              <h1 className="text-xl font-bold text-white">Sanchaari Admin</h1>
+          <div className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/516a5d75-688a-4977-8145-75b378df61a9.png" 
+              alt="Sanchaari Logo" 
+              className="h-8 sm:h-10 md:h-12 w-auto max-w-[100px] sm:max-w-[120px] md:max-w-[140px]"
+            />
+            <div className="hidden sm:block">
+              <h1 className="text-lg md:text-xl font-bold text-white">Admin Portal</h1>
               <p className="text-xs text-gray-400">{adminProfile?.department || 'Operations'}</p>
             </div>
           </div>

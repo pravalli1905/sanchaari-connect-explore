@@ -21,11 +21,11 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <img 
               src="/lovable-uploads/516a5d75-688a-4977-8145-75b378df61a9.png" 
               alt="Sanchaari Logo" 
-              className="h-8 w-auto"
+              className="h-10 sm:h-12 md:h-14 w-auto max-w-[120px] sm:max-w-[140px] md:max-w-[160px]"
             />
           </Link>
 
