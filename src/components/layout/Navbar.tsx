@@ -25,7 +25,7 @@ const Navbar = () => {
             <img 
               src="/lovable-uploads/516a5d75-688a-4977-8145-75b378df61a9.png" 
               alt="Sanchaari Logo" 
-              className="h-10 sm:h-12 md:h-14 w-auto max-w-[120px] sm:max-w-[140px] md:max-w-[160px]"
+              className="h-12 sm:h-16 md:h-20 w-auto max-w-[180px] sm:max-w-[220px] md:max-w-[260px]"
             />
           </Link>
 

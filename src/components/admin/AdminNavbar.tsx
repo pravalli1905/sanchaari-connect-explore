@@ -47,7 +47,7 @@ const AdminNavbar: React.FC<AdminNavbarProps> = ({ onMenuToggle }) => {
             <img 
               src="/lovable-uploads/516a5d75-688a-4977-8145-75b378df61a9.png" 
               alt="Sanchaari Logo" 
-              className="h-8 sm:h-10 md:h-12 w-auto max-w-[100px] sm:max-w-[120px] md:max-w-[140px]"
+              className="h-12 sm:h-14 md:h-16 w-auto max-w-[160px] sm:max-w-[180px] md:max-w-[200px]"
             />
             <div className="hidden sm:block">
               <h1 className="text-lg md:text-xl font-bold text-white">Admin Portal</h1>
