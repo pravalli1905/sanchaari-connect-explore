@@ -52,6 +52,14 @@ import HelpCenter from "./pages/HelpCenter";
 import SupportChat from "./pages/SupportChat";
 import Feedback from "./pages/Feedback";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Features from "./pages/Features";
+import HowItWorks from "./pages/HowItWorks";
+import Pricing from "./pages/Pricing";
+import Blog from "./pages/Blog";
+import Contact from "./pages/Contact";
+import AboutUs from "./pages/AboutUs";
+import FAQ from "./pages/FAQ";
+import TermsOfService from "./pages/TermsOfService";
 import NotFound from "./pages/NotFound";
 
 // ===== PARTNER PAGES (10) =====
@@ -100,10 +108,18 @@ const App = () => (
                     {/* ===== PUBLIC ROUTES ===== */}
                     <Route path="/" element={<Index />} />
                     <Route path="/language" element={<LanguageSelection />} />
+                    <Route path="/features" element={<Features />} />
+                    <Route path="/how-it-works" element={<HowItWorks />} />
+                    <Route path="/pricing" element={<Pricing />} />
+                    <Route path="/blog" element={<Blog />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/about" element={<AboutUs />} />
                     <Route path="/help" element={<HelpCenter />} />
                     <Route path="/help/chat" element={<SupportChat />} />
                     <Route path="/feedback" element={<Feedback />} />
                     <Route path="/privacy" element={<PrivacyPolicy />} />
+                    <Route path="/faq" element={<FAQ />} />
+                    <Route path="/terms" element={<TermsOfService />} />
 
                     {/* ===== USER AUTHENTICATION ROUTES ===== */}
                     <Route path="/signup" element={
