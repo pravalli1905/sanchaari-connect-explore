@@ -30,14 +30,15 @@ const Navbar = () => {
           </Link>
 
           {/* Center navigation - show marketing nav for logged-out users, app nav for logged-in */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {!isAuthenticated ? (
               <>
-                <a href="#features" className="text-foreground hover:text-primary transition-colors">Features</a>
-                <a href="#how-it-works" className="text-foreground hover:text-primary transition-colors">How it Works</a>
-                <a href="#pricing" className="text-foreground hover:text-primary transition-colors">Pricing</a>
-                <a href="#blog" className="text-foreground hover:text-primary transition-colors">Blog</a>
-                <a href="#contact" className="text-foreground hover:text-primary transition-colors">Contact</a>
+                <Link to="/features" className="text-foreground hover:text-primary transition-colors">Features</Link>
+                <Link to="/how-it-works" className="text-foreground hover:text-primary transition-colors">How it Works</Link>
+                <Link to="/pricing" className="text-foreground hover:text-primary transition-colors">Pricing</Link>
+                <Link to="/blog" className="text-foreground hover:text-primary transition-colors">Blog</Link>
+                <Link to="/about" className="text-foreground hover:text-primary transition-colors">About</Link>
+                <Link to="/contact" className="text-foreground hover:text-primary transition-colors">Contact</Link>
               </>
             ) : (
               <>
@@ -145,11 +146,12 @@ const Navbar = () => {
             <div className="px-4 py-4 space-y-4">
               {!isAuthenticated ? (
                 <>
-                  <a href="#features" className="block text-foreground hover:text-primary transition-colors">Features</a>
-                  <a href="#how-it-works" className="block text-foreground hover:text-primary transition-colors">How it Works</a>
-                  <a href="#pricing" className="block text-foreground hover:text-primary transition-colors">Pricing</a>
-                  <a href="#blog" className="block text-foreground hover:text-primary transition-colors">Blog</a>
-                  <a href="#contact" className="block text-foreground hover:text-primary transition-colors">Contact</a>
+                  <Link to="/features" className="block text-foreground hover:text-primary transition-colors">Features</Link>
+                  <Link to="/how-it-works" className="block text-foreground hover:text-primary transition-colors">How it Works</Link>
+                  <Link to="/pricing" className="block text-foreground hover:text-primary transition-colors">Pricing</Link>
+                  <Link to="/blog" className="block text-foreground hover:text-primary transition-colors">Blog</Link>
+                  <Link to="/about" className="block text-foreground hover:text-primary transition-colors">About</Link>
+                  <Link to="/contact" className="block text-foreground hover:text-primary transition-colors">Contact</Link>
                   <div className="pt-4 border-t border-border space-y-2">
                     <Link to="/language" className="block text-foreground hover:text-primary transition-colors">
                       Language (EN)
