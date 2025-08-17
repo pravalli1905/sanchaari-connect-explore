@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/AuthContext"
+import { Link } from "react-router-dom"
 import Navbar from "@/components/layout/Navbar"
 import Hero from "@/components/home/Hero"
 import Features from "@/components/home/Features"
@@ -51,22 +52,22 @@ const Index = () => {
             <div>
               <h3 className="font-semibold mb-4">Product</h3>
               <ul className="space-y-2 text-white/80">
-                <li><a href="/features" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="/how-it-works" className="hover:text-white transition-colors">How it Works</a></li>
-                <li><a href="/pricing" className="hover:text-white transition-colors">Pricing</a></li>
+                <li><Link to="/features" className="hover:text-white transition-colors">Features</Link></li>
+                <li><Link to="/how-it-works" className="hover:text-white transition-colors">How it Works</Link></li>
+                <li><Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">Support</h3>
               <ul className="space-y-2 text-white/80">
-                <li><a href="/help-center" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="/faq" className="hover:text-white transition-colors">FAQs</a></li>
-                <li><a href="/contact" className="hover:text-white transition-colors">Contact</a></li>
-                <li><a href="/about" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="/blog" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</a></li>
+                <li><Link to="/help" className="hover:text-white transition-colors">Help Center</Link></li>
+                <li><Link to="/faq" className="hover:text-white transition-colors">FAQs</Link></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+                <li><Link to="/about" className="hover:text-white transition-colors">About Us</Link></li>
+                <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+                <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
