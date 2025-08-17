@@ -5,6 +5,7 @@ import Hero from "@/components/home/Hero"
 import Features from "@/components/home/Features"
 import Testimonials from "@/components/home/Testimonials"
 import Home from "./Home"
+import DemoChatBot from "@/components/demo/DemoChatBot"
 
 const Index = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -30,6 +31,7 @@ const Index = () => {
       <Hero />
       <Features />
       <Testimonials />
+      <DemoChatBot />
       
       {/* Footer */}
       <footer className="bg-secondary text-white py-12">

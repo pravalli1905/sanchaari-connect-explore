@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { HeroButton } from "@/components/ui/hero-button"
 import { Play, MessageCircle } from "lucide-react"
 import heroImage from "@/assets/hero-image.jpg"
+import DemoVideoModal from "@/components/demo/DemoVideoModal"
 
 const Hero = () => {
   const [currentText, setCurrentText] = useState("")
@@ -52,10 +53,14 @@ const Hero = () => {
               Get Started Free
             </HeroButton>
           </Link>
-          <HeroButton variant="secondary" className="min-w-[200px] group">
-            <Play size={20} className="mr-2 group-hover:scale-110 transition-transform" />
-            Watch Demo
-          </HeroButton>
+          <DemoVideoModal
+            trigger={
+              <HeroButton variant="secondary" className="min-w-[200px] group">
+                <Play size={20} className="mr-2 group-hover:scale-110 transition-transform" />
+                Watch Demo
+              </HeroButton>
+            }
+          />
         </div>
 
       </div>
