@@ -101,7 +101,7 @@ const App = () => (
           <AdminAuthProvider>
             <BookingProvider>
               <TooltipProvider>
-                <Toaster />
+                  <Toaster />
                 <Sonner />
                 <BrowserRouter>
                   <Routes>

@@ -72,32 +72,22 @@ const ChatBot = ({ userType = 'user', context }: ChatBotProps) => {
     setIsLoading(true);
 
     try {
-      // Call Supabase Edge Function for AI response
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: [
-            { role: 'system', content: getSystemPrompt() },
-            ...messages.slice(-5).map(m => ({ role: m.role, content: m.content })),
-            { role: 'user', content: input.trim() }
-          ],
-          userType,
-          context
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to get response');
-      }
-
-      const data = await response.json();
+      // Create demo response for showcase
+      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000)); // Simulate API delay
+      
+      const demoResponses = [
+        "Great question! For group travel to Goa, I'd recommend booking 2-3 months in advance for the best deals. The peak season (Dec-Feb) fills up quickly, especially for groups of 6+. Would you like me to help you find accommodations that can handle your group size?",
+        "I can help you plan an amazing group trip! Based on your preferences, I suggest creating a shared itinerary where everyone can vote on activities. For a group of 8, consider villa rentals over hotel rooms - they're often more cost-effective and fun for groups.",
+        "Perfect timing for planning! Group bookings often get discounts for flights and accommodations. I can help coordinate your group preferences, split expenses, and create a shared planning space. What's your destination and travel dates?",
+        "For group coordination, I recommend setting up a group chat, shared expense tracker, and voting system for activities. This ensures everyone stays involved in the planning process. Would you like me to create a planning checklist for your group?",
+        "Absolutely! I can help with flight bookings, hotel reservations, activity planning, and group coordination. For seamless planning, I suggest starting with everyone's budget preferences and must-have activities. What type of trip are you planning?"
+      ];
+      
+      const randomResponse = demoResponses[Math.floor(Math.random() * demoResponses.length)];
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: data.response || 'Sorry, I could not process your request.',
+        content: randomResponse,
         role: 'assistant',
         timestamp: new Date()
       };
