@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Bot, User, Minimize2, Maximize2, Mic, MicOff, Paperclip, MoreHorizontal, Sparkles, Zap, Globe } from 'lucide-react';
+import { MessageCircle, X, Send, Bot, User, Minimize2, Maximize2, Mic, MicOff, Sparkles, Zap, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 
@@ -223,12 +222,9 @@ const ModernChatBot = ({ userType = 'user', context }: ChatBotProps) => {
         <div className="relative bg-gradient-to-r from-primary via-primary-hover to-accent p-4 rounded-t-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Avatar className="h-10 w-10 border-2 border-white/20 shadow-lg">
-                <AvatarImage src="/lovable-uploads/516a5d75-688a-4977-8145-75b378df61a9.png" />
-                <AvatarFallback className="bg-white/20 text-white font-bold">
-                  <Bot className="h-5 w-5" />
-                </AvatarFallback>
-              </Avatar>
+              <div className="w-10 h-10 bg-gradient-to-br from-white/20 to-white/10 rounded-full flex items-center justify-center border-2 border-white/20 shadow-lg">
+                <Bot className="h-5 w-5 text-white" />
+              </div>
               <div>
                 <h3 className="text-white font-bold text-lg flex items-center gap-2">
                   Sanchaari AI 
@@ -284,11 +280,9 @@ const ModernChatBot = ({ userType = 'user', context }: ChatBotProps) => {
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     {message.role === 'assistant' && (
-                      <Avatar className="h-8 w-8 border-2 border-primary/20 shadow-md">
-                        <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white text-xs">
-                          <Bot className="h-4 w-4" />
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center flex-shrink-0 border-2 border-primary/20 shadow-md">
+                        <Bot className="h-4 w-4 text-white" />
+                      </div>
                     )}
                     
                     <div className={`max-w-[85%] space-y-2`}>
@@ -327,11 +321,9 @@ const ModernChatBot = ({ userType = 'user', context }: ChatBotProps) => {
                     </div>
 
                     {message.role === 'user' && (
-                      <Avatar className="h-8 w-8 border-2 border-secondary/20 shadow-md">
-                        <AvatarFallback className="bg-gradient-to-br from-secondary to-primary text-white text-xs">
-                          <User className="h-4 w-4" />
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className="w-8 h-8 bg-gradient-to-br from-secondary to-primary rounded-full flex items-center justify-center flex-shrink-0 border-2 border-secondary/20 shadow-md">
+                        <User className="h-4 w-4 text-white" />
+                      </div>
                     )}
                   </div>
                 ))}
@@ -339,11 +331,9 @@ const ModernChatBot = ({ userType = 'user', context }: ChatBotProps) => {
                 {/* Typing indicator */}
                 {(isLoading || isTyping) && (
                   <div className="flex gap-3 justify-start animate-fade-in-up">
-                    <Avatar className="h-8 w-8 border-2 border-primary/20">
-                      <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white">
-                        <Bot className="h-4 w-4" />
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center border-2 border-primary/20">
+                      <Bot className="h-4 w-4 text-white" />
+                    </div>
                     <div className="bg-white p-4 rounded-2xl rounded-bl-md shadow-soft border border-border/50">
                       <div className="flex gap-1">
                         <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
@@ -379,13 +369,6 @@ const ModernChatBot = ({ userType = 'user', context }: ChatBotProps) => {
                       }`}
                     >
                       {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 w-8 p-0 rounded-full hover:bg-muted"
-                    >
-                      <Paperclip className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
