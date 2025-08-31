@@ -78,6 +78,28 @@ serve(async (req) => {
     const data = await response.json()
     const assistantResponse = data.choices?.[0]?.message?.content || 'Sorry, I could not process your request.'
 
+    // Trigger webhook
+    const webhookUrl = 'https://data-insights-project.app.n8n.cloud/webhook-test/dc4bbc5b-6e6a-4317-9fbd-8b24acebdf1f'
+    
+    try {
+      await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userType,
+          context,
+          userMessage: messages[messages.length - 1]?.content || '',
+          assistantResponse,
+          timestamp: new Date().toISOString()
+        })
+      })
+    } catch (webhookError) {
+      console.error('Webhook trigger failed:', webhookError)
+      // Don't fail the main response if webhook fails
+    }
+
     return new Response(
       JSON.stringify({ response: assistantResponse }),
       { 
