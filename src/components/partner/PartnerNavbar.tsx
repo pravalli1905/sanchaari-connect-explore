@@ -32,7 +32,7 @@ const PartnerNavbar = () => {
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-3">
             <img 
-              src="/lovable-uploads/516a5d75-688a-4977-8145-75b378df61a9.png" 
+              src="/lovable-uploads/e4bcf995-ae2b-4073-9c80-e508b40675aa.png" 
               alt="Sanchaari Logo" 
               className="h-12 sm:h-14 md:h-16 w-auto max-w-[160px] sm:max-w-[180px] md:max-w-[200px]"
             />
