@@ -23,9 +23,9 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <img 
-              src="/lovable-uploads/e4bcf995-ae2b-4073-9c80-e508b40675aa.png" 
+              src="/lovable-uploads/a7e3fdaf-6154-47ed-93e0-5117b513437a.png" 
               alt="Sanchaari Logo" 
-              className="h-12 sm:h-16 md:h-20 w-auto max-w-[180px] sm:max-w-[220px] md:max-w-[260px]"
+              className="h-8 sm:h-10 md:h-12 w-auto"
             />
           </Link>
 
